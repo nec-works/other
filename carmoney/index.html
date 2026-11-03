@@ -132,17 +132,13 @@
   <!-- 헤더 -->
   <header style="display: flex; justify-content: space-between; align-items: center; margin: 28px 4px 16px 4px;">
     <div>
-      <span style="font-size: 9px; font-weight: 700; color: #c084fc; letter-spacing: 1.5px; text-transform: uppercase;">NODE SERVER APP</span>
+      <span style="font-size: 9px; font-weight: 700; color: #c084fc; letter-spacing: 1.5px; text-transform: uppercase;">NODE SERVER APP V1.0</span>
       <h1 style="font-size: 22px; font-weight: 900; letter-spacing: -0.5px; margin-top: 1px;">NA TEA SIK</h1>
     </div>
     <div style="display: flex; gap: 4px;">
       <!-- 테마 전환 버튼 -->
       <button type="button" onclick="toggleTheme()" id="themeBtn" title="테마 전환" style="font-size: 11px; font-weight: 600; color: #c084fc; background: rgba(192, 132, 252, 0.1); border: 1px solid rgba(192, 132, 252, 0.2); padding: 8px 10px; border-radius: 14px; cursor: pointer;">
         <i class="fa-solid fa-moon" id="themeIcon"></i>
-      </button>
-      <!-- 서버 동기화 불러오기 버튼 -->
-      <button type="button" onclick="loadFromServer()" title="서버에서 새로고침" style="font-size: 11px; font-weight: 600; color: #38bdf8; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); padding: 8px 10px; border-radius: 14px; cursor: pointer;">
-        <i class="fa-solid fa-cloud-arrow-down"></i> 동기화
       </button>
     </div>
   </header>
@@ -271,7 +267,7 @@
         <input type="text" id="memo" placeholder="예: 슈퍼차저, 타이어 교환 등" class="input-field">
       </div>
       <button type="submit" style="width: 100%; background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%); color: #ffffff; font-weight: 700; padding: 14px; border-radius: 12px; border: 1px solid rgba(168, 85, 247, 0.4); cursor: pointer; font-size: 14px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);">
-        <i class="fa-solid fa-check" style="margin-right: 5px;"></i> 기록 저장하기 (서버 동기화)
+        <i class="fa-solid fa-check" style="margin-right: 5px;"></i> 기록 저장하기
       </button>
     </form>
   </section>
@@ -665,17 +661,24 @@ function renderApp() {
     else { totalExpense += r.amount; }
   });
 
-  let totalEarnedBenefit = totalBenefit;
-  let finalCardRemaining = manualRemaining !== null ? manualRemaining : (totalRealCharge + totalEarnedBenefit);
-  let realUsedAmount = (totalRealCharge + totalEarnedBenefit) - finalCardRemaining;
+  let finalCardRemaining = manualRemaining !== null ? manualRemaining : (totalRealCharge + totalBenefit);
+  
+  // 실제 사용한 금액 = (총 충전 선금 + 보너스/크레딧 총합) - 카드 잔여금
+  let realUsedAmount = (cardAdvanceTotal + totalBenefit) - finalCardRemaining;
   if (realUsedAmount < 0) realUsedAmount = 0;
+
+  // 6% 할인 혜택 계산
   let chargeDiscountAmount = Math.floor(realUsedAmount * 0.06);
+
+  // 붕 떠 있던 남은 금액(차액)을 총 이득 포인트에 포함하여 정산
+  let calculatedBenefit = totalBenefit + (cardAdvanceTotal - finalCardRemaining - realUsedAmount);
+  if (calculatedBenefit < totalBenefit) calculatedBenefit = totalBenefit;
 
   document.getElementById('cardRemaining').textContent = finalCardRemaining.toLocaleString() + " 원";
   document.getElementById('cardAdvanceDisplay').textContent = cardAdvanceTotal.toLocaleString() + " 원";
   document.getElementById('realUsedDisplay').textContent = realUsedAmount.toLocaleString() + " 원";
   document.getElementById('chargeDiscountDisplay').textContent = chargeDiscountAmount.toLocaleString() + " 원";
-  document.getElementById('totalBenefitDisplay').textContent = totalEarnedBenefit.toLocaleString() + " 원";
+  document.getElementById('totalBenefitDisplay').textContent = calculatedBenefit.toLocaleString() + " 원";
   document.getElementById('totalOtherChargeDisplay').innerHTML = `${totalOtherCharge.toLocaleString()} <span style="font-size: 14px; font-weight: normal; opacity: 0.7;">원</span>`;
   document.getElementById('otherChargeCountDisplay').textContent = `${otherChargeCount}건`;
   document.getElementById('totalTeslaDisplay').innerHTML = `${totalTesla.toLocaleString()} <span style="font-size: 14px; font-weight: normal; opacity: 0.7;">원</span>`;
