@@ -125,6 +125,13 @@
   .cal-cell:hover { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
   .cal-cell.selected { background: #7c3aed; color: #ffffff !important; font-weight: 700; }
   .cal-cell.other-month { color: #94a3b8; opacity: 0.5; }
+
+  /* 백업 관리 모달 스타일 */
+  #backupModal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 1000;
+    justify-content: center; align-items: center; padding: 20px;
+  }
 </style>
 </head>
 <body>
@@ -135,7 +142,11 @@
       <span style="font-size: 9px; font-weight: 700; color: #c084fc; letter-spacing: 1.5px; text-transform: uppercase;">NODE SERVER APP V1.0</span>
       <h1 style="font-size: 22px; font-weight: 900; letter-spacing: -0.5px; margin-top: 1px;">NA TEA SIK</h1>
     </div>
-    <div style="display: flex; gap: 4px;">
+    <div style="display: flex; gap: 6px;">
+      <!-- 백업 아이콘 버튼 -->
+      <button type="button" onclick="openBackupModal()" title="데이터 백업 관리" style="font-size: 11px; font-weight: 600; color: #38bdf8; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); padding: 8px 10px; border-radius: 14px; cursor: pointer;">
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+      </button>
       <!-- 테마 전환 버튼 -->
       <button type="button" onclick="toggleTheme()" id="themeBtn" title="테마 전환" style="font-size: 11px; font-weight: 600; color: #c084fc; background: rgba(192, 132, 252, 0.1); border: 1px solid rgba(192, 132, 252, 0.2); padding: 8px 10px; border-radius: 14px; cursor: pointer;">
         <i class="fa-solid fa-moon" id="themeIcon"></i>
@@ -279,7 +290,7 @@
         <h3 style="font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px;">
           <i class="fa-solid fa-list" style="color: #c084fc;"></i> 기록 목록
         </h3>
-        <span id="recordCount" style="font-size: 10px; font-weight: 700; background: rgba(255,255,255,0.08); color: var(--sub-text); padding: 2px 8px; border-radius: 12px;">0건</span>
+        <span id="recordCount" style="font-size: 10px; font-weight: 700; background: rgba(255,255,255,0.08); color: var(--sub-text); padding: 2px 8px; border-radius: 12px;">0건 (합산: 0원)</span>
       </div>
       <div style="display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 6px;">
         <select id="filterCategory" onchange="handleCategoryChange()" class="input-field" style="padding: 8px 10px; font-size: 12px;">
@@ -321,6 +332,25 @@
     </div>
     <div id="calDays" class="cal-grid"></div>
     <button type="button" onclick="closeCalendar()" style="width: 100%; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; font-weight: 700; padding: 12px; border-radius: 12px; margin-top: 16px; cursor: pointer; font-size: 13px;">닫기</button>
+  </div>
+</div>
+
+<!-- 백업 관리 모달 -->
+<div id="backupModal" onclick="if(event.target === this) closeBackupModal()">
+  <div class="cal-box" style="max-width: 380px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <h3 style="font-size: 16px; font-weight: 800; color: #38bdf8;"><i class="fa-solid fa-cloud-arrow-up"></i> 데이터 백업 및 복원</h3>
+      <button type="button" onclick="closeBackupModal()" style="background: none; border: none; color: var(--sub-text); cursor: pointer; font-size: 16px;"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <p style="font-size: 11px; color: var(--sub-text); margin-bottom: 14px;">서버 초기화나 소스 재배포 대비용 백업 목록입니다. 백업을 생성하거나 원하는 시점으로 복원하세요.</p>
+    
+    <button type="button" onclick="createBackup()" style="width: 100%; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; font-weight: 700; padding: 12px; border-radius: 12px; border: none; cursor: pointer; font-size: 13px; margin-bottom: 14px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);">
+      <i class="fa-solid fa-plus" style="margin-right: 5px;"></i> 현재 데이터 백업하기 (지금 시점)
+    </button>
+
+    <div id="backupList" style="display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; padding-right: 2px;"></div>
+    
+    <button type="button" onclick="closeBackupModal()" style="width: 100%; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; font-weight: 700; padding: 12px; border-radius: 12px; margin-top: 14px; cursor: pointer; font-size: 13px;">닫기</button>
   </div>
 </div>
 
@@ -427,6 +457,86 @@ function selectDate(dateStr) {
 }
 
 let records = [];
+
+// [백업 기능 관련 함수들]
+function openBackupModal() {
+  document.getElementById('backupModal').style.display = 'flex';
+  renderBackupList();
+}
+
+function closeBackupModal() {
+  document.getElementById('backupModal').style.display = 'none';
+}
+
+function createBackup() {
+  const now = new Date();
+  const yy = String(now.getFullYear()).slice(-2);
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const dateKey = `${yy}-${mm}-${dd}`;
+
+  let backups = JSON.parse(localStorage.getItem('nathe_backups')) || {};
+  
+  // 당일 백업 버전 카운트 계산 (v1, v2...)
+  let vCount = 1;
+  while (backups[`${dateKey}:v${vCount}`]) {
+    vCount++;
+  }
+  const versionKey = `${dateKey}:v${vCount}`;
+
+  backups[versionKey] = records;
+  localStorage.setItem('nathe_backups', JSON.stringify(backups));
+  alert(`[${versionKey}] 백업이 완료되었습니다!`);
+  renderBackupList();
+}
+
+function renderBackupList() {
+  const backupListEl = document.getElementById('backupList');
+  let backups = JSON.parse(localStorage.getItem('nathe_backups')) || {};
+  let keys = Object.keys(backups).sort().reverse();
+
+  if (keys.length === 0) {
+    backupListEl.innerHTML = `<div style="text-align: center; padding: 20px 0; color: var(--sub-text); font-size: 11px;">저장된 백업 내역이 없습니다.</div>`;
+    return;
+  }
+
+  let html = '';
+  keys.forEach(key => {
+    let count = Array.isArray(backups[key]) ? backups[key].length : 0;
+    html += `<div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--input-bg); border: var(--input-border); border-radius: 12px;">
+      <div style="display: flex; flex-direction: column;">
+        <span style="font-size: 12px; font-weight: 700; color: #38bdf8;">${key}</span>
+        <span style="font-size: 10px; color: var(--sub-text);">기록 ${count}건 포함</span>
+      </div>
+      <div style="display: flex; gap: 6px;">
+        <button type="button" onclick="restoreBackup('${key}')" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; font-weight: 700; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 11px;">[복원]</button>
+        <button type="button" onclick="deleteBackup('${key}')" style="background: none; border: none; color: var(--sub-text); cursor: pointer; font-size: 12px; padding: 4px;"><i class="fa-solid fa-trash-can"></i></button>
+      </div>
+    </div>`;
+  });
+  backupListEl.innerHTML = html;
+}
+
+function restoreBackup(key) {
+  if (confirm(`[${key}] 백업 데이터로 복원하시겠습니까? 현재 화면의 데이터가 해당 시점의 데이터로 교체됩니다.`)) {
+    let backups = JSON.parse(localStorage.getItem('nathe_backups')) || {};
+    if (backups[key]) {
+      records = backups[key];
+      saveToServer();
+      closeBackupModal();
+      alert('성공적으로 복원되었습니다!');
+    }
+  }
+}
+
+function deleteBackup(key) {
+  if (confirm(`[${key}] 백업 파일을 삭제하시겠습니까?`)) {
+    let backups = JSON.parse(localStorage.getItem('nathe_backups')) || {};
+    delete backups[key];
+    localStorage.setItem('nathe_backups', JSON.stringify(backups));
+    renderBackupList();
+  }
+}
 
 // [서버 API 연동] Node.js 서버 /api/data 에서 최신 데이터 불러오기 (GET)
 async function loadFromServer() {
@@ -663,14 +773,11 @@ function renderApp() {
 
   let finalCardRemaining = manualRemaining !== null ? manualRemaining : (totalRealCharge + totalBenefit);
   
-  // 실제 사용한 금액 = (총 충전 선금 + 보너스/크레딧 총합) - 카드 잔여금
   let realUsedAmount = (cardAdvanceTotal + totalBenefit) - finalCardRemaining;
   if (realUsedAmount < 0) realUsedAmount = 0;
 
-  // 6% 할인 혜택 계산
   let chargeDiscountAmount = Math.floor(realUsedAmount * 0.06);
 
-  // 붕 떠 있던 남은 금액(차액)을 총 이득 포인트에 포함하여 정산
   let calculatedBenefit = totalBenefit + (cardAdvanceTotal - finalCardRemaining - realUsedAmount);
   if (calculatedBenefit < totalBenefit) calculatedBenefit = totalBenefit;
 
@@ -698,7 +805,13 @@ function renderApp() {
     return matchCat && matchYear && matchMonth;
   });
   displayedRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
-  document.getElementById('recordCount').textContent = `${displayedRecords.length}건`;
+
+  let filteredSum = displayedRecords.reduce((acc, cur) => acc + (Number(cur.amount) || 0), 0);
+
+  const recordCountEl = document.getElementById('recordCount');
+  if (recordCountEl) {
+    recordCountEl.textContent = `${displayedRecords.length}건 (합산: ${filteredSum.toLocaleString()}원)`;
+  }
 
   const recordList = document.getElementById('recordList');
   if (!recordList) return;
