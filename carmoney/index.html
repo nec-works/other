@@ -477,7 +477,6 @@ function createBackup() {
 
   let backups = JSON.parse(localStorage.getItem('nathe_backups')) || {};
   
-  // 당일 백업 버전 카운트 계산 (v1, v2...)
   let vCount = 1;
   while (backups[`${dateKey}:v${vCount}`]) {
     vCount++;
@@ -759,12 +758,13 @@ function deleteRecord(id) {
 }
 
 function renderApp() {
-  let totalRealCharge = 0, totalExpense = 0, totalBenefit = 0, totalOtherCharge = 0, otherChargeCount = 0, totalTesla = 0, teslaCount = 0, totalGeneralExpense = 0, generalExpenseCount = 0, manualRemaining = null, latestRemainingDate = "", cardAdvanceTotal = 0;
+  let totalRealCharge = 0, totalExpense = 0, totalBenefit = 0, totalOtherCharge = 0, otherChargeCount = 0, totalTesla = 0, teslaCount = 0, totalGeneralExpense = 0, generalExpenseCount = 0, manualRemaining = null, latestRemainingDate = "", cardAdvanceTotal = 0, subscriptionTotal = 0;
 
   records.forEach(r => {
     if (r.category === '채비 카드충전') { cardAdvanceTotal += r.amount; totalRealCharge += r.amount; totalExpense += r.amount; }
     else if (r.category === '채비 카드 잔여') { if (!latestRemainingDate || r.date >= latestRemainingDate) { manualRemaining = r.amount; latestRemainingDate = r.date; } }
     else if (r.category === '채비 보너스포인트 적립' || r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧' || r.category === '채비 번개크레딧') { totalBenefit += r.amount; }
+    else if (r.category === '채비 월 구독비' || r.category === '채비 총구독비') { subscriptionTotal += r.amount; totalExpense += r.amount; }
     else if (r.category === '기타 충전소 차감') { totalOtherCharge += r.amount; otherChargeCount++; totalExpense += r.amount; }
     else if (r.category === '테슬라 충전지출') { totalTesla += r.amount; teslaCount++; totalExpense += r.amount; }
     else if (r.category === '정비항목 지출내역' || r.category === '기타 지출내역') { totalGeneralExpense += r.amount; generalExpenseCount++; totalExpense += r.amount; }
@@ -773,12 +773,15 @@ function renderApp() {
 
   let finalCardRemaining = manualRemaining !== null ? manualRemaining : (totalRealCharge + totalBenefit);
   
-  let realUsedAmount = (cardAdvanceTotal + totalBenefit) - finalCardRemaining;
-  if (realUsedAmount < 0) realUsedAmount = 0;
+  // 요청하신 공식 반영: (충전 선금 총액 - 카드 잔여금) + 구독비 총합
+  let netCardUsage = cardAdvanceTotal - finalCardRemaining;
+  if (netCardUsage < 0) netCardUsage = 0;
+  let realUsedAmount = netCardUsage + subscriptionTotal;
 
+  // 6% 할인 혜택 계산
   let chargeDiscountAmount = Math.floor(realUsedAmount * 0.06);
 
-  let calculatedBenefit = totalBenefit + (cardAdvanceTotal - finalCardRemaining - realUsedAmount);
+  let calculatedBenefit = totalBenefit + (cardAdvanceTotal - finalCardRemaining - netCardUsage);
   if (calculatedBenefit < totalBenefit) calculatedBenefit = totalBenefit;
 
   document.getElementById('cardRemaining').textContent = finalCardRemaining.toLocaleString() + " 원";
