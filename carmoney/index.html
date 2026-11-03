@@ -132,7 +132,7 @@
   <!-- 헤더 -->
   <header style="display: flex; justify-content: space-between; align-items: center; margin: 28px 4px 16px 4px;">
     <div>
-      <span style="font-size: 9px; font-weight: 700; color: #c084fc; letter-spacing: 1.5px; text-transform: uppercase;">FTP SERVER APP</span>
+      <span style="font-size: 9px; font-weight: 700; color: #c084fc; letter-spacing: 1.5px; text-transform: uppercase;">NODE SERVER APP</span>
       <h1 style="font-size: 22px; font-weight: 900; letter-spacing: -0.5px; margin-top: 1px;">NA TEA SIK</h1>
     </div>
     <div style="display: flex; gap: 4px;">
@@ -140,7 +140,7 @@
       <button type="button" onclick="toggleTheme()" id="themeBtn" title="테마 전환" style="font-size: 11px; font-weight: 600; color: #c084fc; background: rgba(192, 132, 252, 0.1); border: 1px solid rgba(192, 132, 252, 0.2); padding: 8px 10px; border-radius: 14px; cursor: pointer;">
         <i class="fa-solid fa-moon" id="themeIcon"></i>
       </button>
-      <!-- 실시간 서버 동기화 불러오기 버튼 -->
+      <!-- 서버 동기화 불러오기 버튼 -->
       <button type="button" onclick="loadFromServer()" title="서버에서 새로고침" style="font-size: 11px; font-weight: 600; color: #38bdf8; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); padding: 8px 10px; border-radius: 14px; cursor: pointer;">
         <i class="fa-solid fa-cloud-arrow-down"></i> 동기화
       </button>
@@ -271,7 +271,7 @@
         <input type="text" id="memo" placeholder="예: 슈퍼차저, 타이어 교환 등" class="input-field">
       </div>
       <button type="submit" style="width: 100%; background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%); color: #ffffff; font-weight: 700; padding: 14px; border-radius: 12px; border: 1px solid rgba(168, 85, 247, 0.4); cursor: pointer; font-size: 14px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);">
-        <i class="fa-solid fa-check" style="margin-right: 5px;"></i> 기록 저장하기
+        <i class="fa-solid fa-check" style="margin-right: 5px;"></i> 기록 저장하기 (서버 동기화)
       </button>
     </form>
   </section>
@@ -432,26 +432,46 @@ function selectDate(dateStr) {
 
 let records = [];
 
-// [서버 동기화 기능] 캐시를 무조건 방지하고 서버의 최신 data.json을 실시간 반영
+// [서버 API 연동] Node.js 서버 /api/data 에서 최신 데이터 불러오기 (GET)
 async function loadFromServer() {
   try {
-    const res = await fetch(`data.json?t=${Date.now()}`, { cache: 'no-store' });
+    const res = await fetch('/api/data', { cache: 'no-store' });
     if (res.ok) {
       const jsonData = await res.json();
-      if (Array.isArray(jsonData)) {
-        records = jsonData;
-        checkAndGenerateAutomaticRecords();
-        saveAndRender();
-        return;
-      }
+      records = Array.isArray(jsonData) ? jsonData : (jsonData.records || []);
+      checkAndGenerateAutomaticRecords();
+      renderApp();
+      return;
     }
   } catch (e) {
-    console.warn("서버 연결 실패, 로컬 저장소 사용");
+    console.warn("서버 API 로드 실패, 로컬 저장소 사용");
   }
 
   records = JSON.parse(localStorage.getItem('nathe_car_records')) || [];
   checkAndGenerateAutomaticRecords();
-  saveAndRender();
+  renderApp();
+}
+
+// [서버 API 연동] Node.js 서버 /api/data 로 실시간 데이터 저장하기 (POST)
+async function saveToServer() {
+  localStorage.setItem('nathe_car_records', JSON.stringify(records));
+  updateFilterYears();
+  renderApp();
+
+  try {
+    const res = await fetch('/api/data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(records)
+    });
+    if (!res.ok) {
+      console.warn("서버 저장 실패");
+    }
+  } catch (err) {
+    console.warn("서버 통신 에러 (로컬에만 저장됨)");
+  }
 }
 
 function checkAndGenerateAutomaticRecords() {
@@ -569,17 +589,11 @@ if (recordForm) {
       const earnedPoint = Math.floor(amount * 0.05);
       if (earnedPoint > 0) { records.push({ id: Date.now() + 1, category: '채비 보너스포인트 적립', date, amount: earnedPoint, memo: memo ? `${memo} 충전 적립 5%` : '충전 적립 5%' }); }
     }
-    saveAndRender(); 
+    saveToServer(); 
     recordForm.reset(); 
     initCalendarUI(); 
     handleCategoryInput();
   });
-}
-
-function saveAndRender() { 
-  localStorage.setItem('nathe_car_records', JSON.stringify(records)); 
-  updateFilterYears(); 
-  renderApp();
 }
 
 const filterCategory = document.getElementById('filterCategory'); 
@@ -634,7 +648,7 @@ function updateFilterMonths() {
 function deleteRecord(id) { 
   if(confirm('정말 이 내역을 삭제하시겠습니까?')) { 
     records = records.filter(r => r.id !== id); 
-    saveAndRender(); 
+    saveToServer(); 
   } 
 }
 
@@ -702,7 +716,7 @@ function renderApp() {
     if (r.category === '채비 카드충전') { badgeBg = 'rgba(34, 197, 94, 0.1)'; badgeColor = '#22c55e'; displaySign = '-'; amountColor = '#ef4444'; }
     else if (r.category === '채비 카드 잔여') { badgeBg = 'rgba(168, 85, 247, 0.1)'; badgeColor = '#c084fc'; }
     else if (r.category === '채비 월 구독비' || r.category === '채비 총구독비') { badgeBg = 'rgba(6, 182, 212, 0.1)'; badgeColor = '#06b6d4'; displaySign = '-'; amountColor = '#ef4444'; }
-    else if (r.category === '채by 월 보너스포인트' || r.category === '채비 월 보너스 크레딧' || r.category === '채비 보너스포인트 적립' || r.category === '채비 번개크레딧') { badgeBg = 'rgba(168, 85, 247, 0.1)'; badgeColor = '#c084fc'; }
+    else if (r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧' || r.category === '채비 보너스포인트 적립' || r.category === '채비 번개크레딧') { badgeBg = 'rgba(168, 85, 247, 0.1)'; badgeColor = '#c084fc'; }
     else if (r.category === '기타 충전소 차감') { badgeBg = 'rgba(147, 51, 234, 0.1)'; badgeColor = '#9333ea'; displaySign = '-'; amountColor = '#ef4444'; }
     else if (r.category === '테슬라 충전지출') { badgeBg = 'rgba(239, 68, 68, 0.15)'; badgeColor = '#ef4444'; displaySign = '-'; amountColor = '#ef4444'; }
     else if (r.category === '정비항목 지출내역' || r.category === '기타 지출내역') { badgeBg = 'rgba(51, 65, 85, 0.15)'; badgeColor = 'var(--sub-text)'; displaySign = '-'; amountColor = '#ef4444'; }
@@ -724,7 +738,7 @@ function renderApp() {
   recordList.innerHTML = html;
 }
 
-// 최초 실행 시 서버 data.json 강제 새로고침 로드
+// 최초 실행 시 서버 API에서 데이터 호출
 initCalendarUI();
 loadFromServer();
 </script>
