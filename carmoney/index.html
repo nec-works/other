@@ -15,49 +15,49 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   
+  /* 애플 감성 글라스 테마 고정 변수 */
   :root {
-    --bg-gradient: linear-gradient(135deg, #07050f 0%, #0d0918 50%, #040308 100%);
-    --text-color: #e2e8f0;
-    --card-bg: rgba(25, 18, 40, 0.45);
-    --card-border: 1px solid rgba(168, 85, 247, 0.1);
-    --input-bg: rgba(255, 255, 255, 0.03);
-    --input-border: 1px solid rgba(168, 85, 247, 0.15);
-    --input-color: #f1f5f9;
-    --sub-text: #94a3b8;
-  }
-
-  [data-theme="light"] {
-    --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
-    --text-color: #1e293b;
-    --card-bg: rgba(255, 255, 255, 0.85);
-    --card-border: 1px solid rgba(168, 85, 247, 0.2);
-    --input-bg: rgba(0, 0, 0, 0.02);
-    --input-border: 1px solid rgba(168, 85, 247, 0.3);
-    --input-color: #0f172a;
-    --sub-text: #64748b;
+    --bg-gradient: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%);
+    --text-color: #ffffff;
+    --card-bg: rgba(255, 255, 255, 0.12);
+    --card-border: 1px solid rgba(255, 255, 255, 0.25);
+    --input-bg: rgba(255, 255, 255, 0.08);
+    --input-border: 1px solid rgba(255, 255, 255, 0.2);
+    --input-color: #ffffff;
+    --sub-text: rgba(255, 255, 255, 0.7);
+    --header-bg: #38bdf8;
   }
 
   body { 
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Apple SD Gothic Neo', sans-serif; 
     background: var(--bg-gradient);
+    background-attachment: fixed;
     color: var(--text-color);
     padding: env(safe-area-inset-top) env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + 40px) env(safe-area-inset-left);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
-    transition: background 0.3s ease, color 0.3s ease;
   }
+
   .no-scrollbar::-webkit-scrollbar { display: none; } 
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   
+  .app-container { max-width: 420px; margin: 0 auto; padding: 16px; }
+  .app-header { display: flex; justify-content: space-between; align-items: center; margin: 28px 4px 16px 4px; }
+  .header-title-sub { font-size: 9px; font-weight: 700; color: var(--header-bg); letter-spacing: 1.5px; text-transform: uppercase; }
+  .header-title-main { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; margin-top: 1px; }
+  .header-btn-group { display: flex; gap: 6px; }
+  
   .clean-card {
     background: var(--card-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: var(--card-border);
     box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.15);
     border-radius: 20px;
     padding: 22px;
+    margin-bottom: 16px;
   }
+
   .primary-gradient {
     background: linear-gradient(135deg, rgba(76, 29, 149, 0.85) 0%, rgba(59, 7, 100, 0.95) 100%);
     color: #ffffff !important;
@@ -78,6 +78,7 @@
     color: #ffffff !important;
     border: 1px solid rgba(148, 163, 184, 0.3);
   }
+
   .input-field {
     width: 100%;
     background: var(--input-bg);
@@ -90,66 +91,70 @@
     transition: all 0.2s ease;
   }
   .input-field:focus {
-    border-color: #a855f7;
-    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
   }
   select.input-field {
     appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a855f7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 12px center;
     background-size: 14px;
     padding-right: 36px;
     cursor: pointer;
   }
-  select.input-field option { background-color: #120a1f; color: #f1f5f9; }
-  [data-theme="light"] select.input-field option { background-color: #ffffff; color: #0f172a; }
+  select.input-field option { background-color: #1e1b4b; color: #ffffff; }
 
-  /* 커스텀 캘린더 모달 스타일 */
-  #calModal {
+  .btn-icon {
+    font-size: 11px; font-weight: 600; color: #38bdf8; 
+    background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); 
+    padding: 8px 12px; border-radius: 14px; cursor: pointer; transition: 0.2s;
+  }
+  .btn-icon:active { transform: scale(0.95); }
+
+  .btn-primary {
+    width: 100%; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); 
+    color: #ffffff; font-weight: 700; padding: 14px; border-radius: 12px; 
+    border: 1px solid rgba(56, 189, 248, 0.4); cursor: pointer; font-size: 14px; 
+    box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3); transition: 0.2s;
+  }
+  .btn-primary:active { transform: scale(0.98); }
+
+  .modal-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 1000;
     justify-content: center; align-items: center; padding: 20px;
   }
-  .cal-box {
-    background: #140a23; border: 1px solid rgba(168, 85, 247, 0.3);
-    border-radius: 24px; width: 100%; max-width: 340px; padding: 20px; color: #f1f5f9;
+  .modal-box {
+    background: rgba(30, 27, 75, 0.85); backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 24px; width: 100%; max-width: 340px; padding: 20px; color: #ffffff;
   }
-  [data-theme="light"] .cal-box { background: #ffffff; color: #0f172a; }
+
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; margin-top: 10px; }
   .cal-day-header { font-size: 11px; font-weight: 700; color: var(--sub-text); padding-bottom: 6px; }
   .cal-cell {
     aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
     font-size: 14px; font-weight: 500; border-radius: 10px; cursor: pointer; color: var(--text-color);
   }
-  .cal-cell:hover { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
-  .cal-cell.selected { background: #7c3aed; color: #ffffff !important; font-weight: 700; }
-  .cal-cell.other-month { color: #94a3b8; opacity: 0.5; }
-
-  /* 백업 관리 모달 스타일 */
-  #backupModal {
-    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 1000;
-    justify-content: center; align-items: center; padding: 20px;
-  }
+  .cal-cell:hover { background: rgba(255, 255, 255, 0.2); color: #38bdf8; }
+  .cal-cell.selected { background: #0284c7; color: #ffffff !important; font-weight: 700; }
+  .cal-cell.other-month { color: var(--sub-text); opacity: 0.5; }
 </style>
 </head>
+
 <body>
-<div style="max-width: 420px; margin: 0 auto; padding: 16px;">
+<div class="app-container">
   <!-- 헤더 -->
-  <header style="display: flex; justify-content: space-between; align-items: center; margin: 28px 4px 16px 4px;">
+  <header class="app-header">
     <div>
-      <span style="font-size: 9px; font-weight: 700; color: #c084fc; letter-spacing: 1.5px; text-transform: uppercase;">NODE SERVER APP V1.1</span>
-      <h1 style="font-size: 22px; font-weight: 900; letter-spacing: -0.5px; margin-top: 1px;">NA TEA SIK</h1>
+      <span class="header-title-sub">APPLE GLASS APP V1.1</span>
+      <h1 class="header-title-main">NA TEA SIK</h1>
     </div>
-    <div style="display: flex; gap: 6px;">
+    <div class="header-btn-group">
       <!-- 백업 아이콘 버튼 -->
-      <button type="button" onclick="openBackupModal()" title="데이터 백업 관리" style="font-size: 11px; font-weight: 600; color: #38bdf8; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); padding: 8px 10px; border-radius: 14px; cursor: pointer;">
-        <i class="fa-solid fa-cloud-arrow-up"></i>
-      </button>
-      <!-- 테마 전환 버튼 -->
-      <button type="button" onclick="toggleTheme()" id="themeBtn" title="테마 전환" style="font-size: 11px; font-weight: 600; color: #c084fc; background: rgba(192, 132, 252, 0.1); border: 1px solid rgba(192, 132, 252, 0.2); padding: 8px 10px; border-radius: 14px; cursor: pointer;">
-        <i class="fa-solid fa-moon" id="themeIcon"></i>
+      <button type="button" onclick="openBackupModal()" class="btn-icon" title="데이터 백업 관리">
+        <i class="fa-solid fa-cloud-arrow-up"></i> 백업관리
       </button>
     </div>
   </header>
@@ -158,7 +163,7 @@
   <div style="position: relative; margin-bottom: 16px;">
     <div id="cardSlider" class="no-scrollbar" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding-bottom: 4px;">
       
-      <section style="min-width: 100%; scroll-snap-align: center;" class="primary-gradient clean-card">
+      <section style="min-width: 100%; scroll-snap-align: center;" class="primary-gradient clean-card" style="margin-bottom:0;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
           <div>
             <span style="font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.7); text-transform: uppercase;">CHAEVI BALANCE</span>
@@ -174,7 +179,7 @@
         </div>
       </section>
 
-      <section style="min-width: 100%; scroll-snap-align: center;" class="other-gradient clean-card">
+      <section style="min-width: 100%; scroll-snap-align: center;" class="other-gradient clean-card" style="margin-bottom:0;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
           <div>
             <span style="font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.7); text-transform: uppercase;">OTHER CHARGERS</span>
@@ -188,14 +193,17 @@
         </div>
       </section>
 
-      <section style="min-width: 100%; scroll-snap-align: center;" class="tesla-gradient clean-card">
+      <section style="min-width: 100%; scroll-snap-align: center;" class="tesla-gradient clean-card" style="margin-bottom:0;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
           <div>
             <span style="font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.8); text-transform: uppercase;">SUPERCHARGER</span>
             <h2 id="totalTeslaDisplay" style="font-size: 28px; font-weight: 900; margin-top: 4px;">0 <span style="font-size: 14px; font-weight: normal; opacity: 0.7;">원</span></h2>
           </div>
           <div style="background: rgba(255,255,255,0.15); width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center;">
-            <svg style="width: 22px; height: 22px; fill: #ffffff;" viewBox="0 0 100 100"><path d="M96.5,15.2C85,12.7,46.5,12,46.5,12s-38.5,0.7-50,3.2C6.3,16.5,3.7,21.5,4,27.5C4.3,34,5,44,5,44s3.7,1,11,1.5 c6,0.5,10.2-0.5,11-1.5c0,0,0.5-12.2,0.7-18c0.2-5.8,1.2-7.5,7-7.7c11.5-0.5,31-0.7,31-0.7s19.5,0.2,31,0.7c5.8,0.2,6.8,1.8,7,7.7 c0.2,5.8,0.7,18,0.7,18c0.8,1,5,2,11,1.5c7.3-0.5,11-1.5,11-1.5s0.7-10,1-16.5C96.3,21.5,93.7,16.5,96.5,15.2z"/><path d="M41,35.5c0,0-1,34-1,40.5c0,6.5,2,9,9.5,9.5c7.5,0.5,9.5-3,9.5-9.5c0-6.5-1-40.5-1-40.5s-8.5-0.2-17,0-8.5,0-8.5,0Z"/></svg>
+            <svg style="width: 22px; height: 22px; fill: #ffffff;" viewBox="0 0 100 100">
+              <path d="M96.5,15.2C85,12.7,46.5,12,46.5,12s-38.5,0.7-50,3.2C6.3,16.5,3.7,21.5,4,27.5C4.3,34,5,44,5,44s3.7,1,11,1.5 c6,0.5,10.2-0.5,11-1.5c0,0,0.5-12.2,0.7-18c0.2-5.8,1.2-7.5,7-7.7c11.5-0.5,31-0.7,31-0.7s19.5,0.2,31,0.7c5.8,0.2,6.8,1.8,7,7.7 c0.2,5.8,0.7,18,0.7,18c0.8,1,5,2,11,1.5c7.3-0.5,11-1.5,11-1.5s0.7-10,1-16.5C96.3,21.5,93.7,16.5,96.5,15.2z" />
+              <path d="M41,35.5c0,0-1,34-1,40.5c0,6.5,2,9,9.5,9.5c7.5,0.5,9.5-3,9.5-9.5c0-6.5-1-40.5-1-40.5s-8.5-0.2-17,0-8.5,0-8.5,0Z" />
+            </svg>
           </div>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 11px;">
@@ -204,7 +212,7 @@
         </div>
       </section>
 
-      <section style="min-width: 100%; scroll-snap-align: center;" class="expense-gradient clean-card">
+      <section style="min-width: 100%; scroll-snap-align: center;" class="expense-gradient clean-card" style="margin-bottom:0;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
           <div>
             <span style="font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.8); text-transform: uppercase;">GENERAL EXPENSE</span>
@@ -220,7 +228,7 @@
 
     </div>
     <div style="display: flex; justify-content: center; gap: 5px; margin-top: 10px;" id="dotContainer">
-      <button type="button" onclick="scrollToCard(0)" id="dot0" style="width: 16px; height: 5px; border-radius: 3px; background: #c084fc; border: none; cursor: pointer;"></button>
+      <button type="button" onclick="scrollToCard(0)" id="dot0" style="width: 16px; height: 5px; border-radius: 3px; background: #38bdf8; border: none; cursor: pointer;"></button>
       <button type="button" onclick="scrollToCard(1)" id="dot1" style="width: 5px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.2); border: none; cursor: pointer;"></button>
       <button type="button" onclick="scrollToCard(2)" id="dot2" style="width: 5px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.2); border: none; cursor: pointer;"></button>
       <button type="button" onclick="scrollToCard(3)" id="dot3" style="width: 5px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.2); border: none; cursor: pointer;"></button>
@@ -228,13 +236,13 @@
   </div>
 
   <!-- 총 지출 금액 박스 -->
-  <section class="clean-card" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; padding: 18px 20px;">
+  <section class="clean-card" style="display: flex; justify-content: space-between; align-items: center; padding: 18px 20px;">
     <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="background: rgba(244, 63, 94, 0.15); color: #f43f5e; width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 1px solid rgba(244, 63, 94, 0.3);">
+      <div style="background: rgba(244, 63, 94, 0.2); color: #f43f5e; width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 1px solid rgba(244, 63, 94, 0.4);">
         <i class="fa-solid fa-wallet"></i>
       </div>
       <div>
-        <span style="font-size: 10px; font-weight: 700; color: #a78bfa; text-transform: uppercase; display: block; margin-bottom: 1px;">TOTAL EXPENSE</span>
+        <span style="font-size: 10px; font-weight: 700; color: #38bdf8; text-transform: uppercase; display: block; margin-bottom: 1px;">TOTAL EXPENSE</span>
         <span style="font-size: 10px; color: var(--sub-text);">통장 출금 총액 기준</span>
       </div>
     </div>
@@ -244,9 +252,9 @@
   </section>
 
   <!-- 새 내역 기록하기 -->
-  <section class="clean-card" style="margin-bottom: 16px;">
+  <section class="clean-card">
     <h3 style="font-size: 13px; font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 6px;">
-      <i class="fa-solid fa-pen-to-square" style="color: #c084fc;"></i> 새 내역 기록하기
+      <i class="fa-solid fa-pen-to-square" style="color: #38bdf8;"></i> 새 내역 기록하기
     </h3>
     <form id="recordForm" style="display: flex; flex-direction: column; gap: 12px;">
       <div>
@@ -264,33 +272,33 @@
         <label style="display: block; font-size: 11px; font-weight: 700; color: var(--sub-text); margin-bottom: 5px;">날짜</label>
         <div onclick="openCalendar()" class="input-field" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
           <span id="selectedDateText">날짜를 선택하세요</span>
-          <i class="fa-regular fa-calendar" style="color: #c084fc;"></i>
+          <i class="fa-regular fa-calendar" style="color: #38bdf8;"></i>
         </div>
         <input type="text" id="recordDate" style="display:none;" required>
       </div>
       <div>
         <label id="amountLabel" style="display: block; font-size: 11px; font-weight: 700; color: var(--sub-text); margin-bottom: 5px;">금액 (원)</label>
         <input type="number" id="amount" placeholder="금액을 입력하세요" class="input-field" required>
-        <p id="pointPreview" style="font-size: 11px; font-weight: 600; color: #c084fc; margin-top: 5px; display: none;"></p>
+        <p id="pointPreview" style="font-size: 11px; font-weight: 600; color: #38bdf8; margin-top: 5px; display: none;"></p>
       </div>
       <div>
         <label style="display: block; font-size: 11px; font-weight: 700; color: var(--sub-text); margin-bottom: 5px;">상세 내용 / 메모</label>
         <input type="text" id="memo" placeholder="예: 슈퍼차저, 타이어 교환 등" class="input-field">
       </div>
-      <button type="submit" style="width: 100%; background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%); color: #ffffff; font-weight: 700; padding: 14px; border-radius: 12px; border: 1px solid rgba(168, 85, 247, 0.4); cursor: pointer; font-size: 14px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);">
+      <button type="submit" class="btn-primary">
         <i class="fa-solid fa-check" style="margin-right: 5px;"></i> 기록 저장하기
       </button>
     </form>
   </section>
 
   <!-- 기록 목록 및 통계 -->
-  <section class="clean-card">
+  <section class="clean-card" style="margin-bottom:0;">
     <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <h3 style="font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px;">
-          <i class="fa-solid fa-list" style="color: #c084fc;"></i> 기록 목록
+          <i class="fa-solid fa-list" style="color: #38bdf8;"></i> 기록 목록
         </h3>
-        <span id="recordCount" style="font-size: 10px; font-weight: 700; background: rgba(255,255,255,0.08); color: var(--sub-text); padding: 2px 8px; border-radius: 12px;">0건 (합산: 0원)</span>
+        <span id="recordCount" style="font-size: 10px; font-weight: 700; background: rgba(255,255,255,0.15); color: #ffffff; padding: 3px 8px; border-radius: 12px;">0건 (합산: 0원)</span>
       </div>
       <div style="display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 6px;">
         <select id="filterCategory" onchange="handleCategoryChange()" class="input-field" style="padding: 8px 10px; font-size: 12px;">
@@ -314,12 +322,12 @@
 </div>
 
 <!-- 커스텀 캘린더 모달 -->
-<div id="calModal" onclick="if(event.target === this) closeCalendar()">
-  <div class="cal-box">
+<div id="calModal" class="modal-overlay" onclick="if(event.target === this) closeCalendar()">
+  <div class="modal-box">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-      <button type="button" onclick="changeMonth(-1)" style="background: none; border: none; color: #c084fc; cursor: pointer; font-size: 14px; padding: 6px 10px;"><i class="fa-solid fa-chevron-left"></i></button>
+      <button type="button" onclick="changeMonth(-1)" style="background: none; border: none; color: #38bdf8; cursor: pointer; font-size: 14px; padding: 6px 10px;"><i class="fa-solid fa-chevron-left"></i></button>
       <h3 id="calTitle" style="font-size: 15px; font-weight: 800;">2026년 4월</h3>
-      <button type="button" onclick="changeMonth(1)" style="background: none; border: none; color: #c084fc; cursor: pointer; font-size: 14px; padding: 6px 10px;"><i class="fa-solid fa-chevron-right"></i></button>
+      <button type="button" onclick="changeMonth(1)" style="background: none; border: none; color: #38bdf8; cursor: pointer; font-size: 14px; padding: 6px 10px;"><i class="fa-solid fa-chevron-right"></i></button>
     </div>
     <div class="cal-grid">
       <div class="cal-day-header" style="color: #f43f5e;">일</div>
@@ -331,13 +339,13 @@
       <div class="cal-day-header" style="color: #60a5fa;">토</div>
     </div>
     <div id="calDays" class="cal-grid"></div>
-    <button type="button" onclick="closeCalendar()" style="width: 100%; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; font-weight: 700; padding: 12px; border-radius: 12px; margin-top: 16px; cursor: pointer; font-size: 13px;">닫기</button>
+    <button type="button" onclick="closeCalendar()" style="width: 100%; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; font-weight: 700; padding: 12px; border-radius: 12px; margin-top: 16px; cursor: pointer; font-size: 13px;">닫기</button>
   </div>
 </div>
 
 <!-- 백업 관리 모달 -->
-<div id="backupModal" onclick="if(event.target === this) closeBackupModal()">
-  <div class="cal-box" style="max-width: 380px;">
+<div id="backupModal" class="modal-overlay" onclick="if(event.target === this) closeBackupModal()">
+  <div class="modal-box" style="max-width: 380px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
       <h3 style="font-size: 16px; font-weight: 800; color: #38bdf8;"><i class="fa-solid fa-cloud-arrow-up"></i> 데이터 백업 및 복원</h3>
       <button type="button" onclick="closeBackupModal()" style="background: none; border: none; color: var(--sub-text); cursor: pointer; font-size: 16px;"><i class="fa-solid fa-xmark"></i></button>
@@ -350,537 +358,524 @@
 
     <div id="backupList" style="display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; padding-right: 2px;"></div>
     
-    <button type="button" onclick="closeBackupModal()" style="width: 100%; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; font-weight: 700; padding: 12px; border-radius: 12px; margin-top: 14px; cursor: pointer; font-size: 13px;">닫기</button>
+    <button type="button" onclick="closeBackupModal()" style="width: 100%; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; font-weight: 700; padding: 12px; border-radius: 12px; margin-top: 14px; cursor: pointer; font-size: 13px;">닫기</button>
   </div>
 </div>
 
 <script>
-function initTheme() {
-  const savedTheme = localStorage.getItem('nathe_theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  updateThemeIcon(savedTheme);
-}
+  let currentCalDate = new Date();
+  let selectedDateStr = new Date().toISOString().split('T')[0];
 
-function toggleTheme() {
-  const currentTheme = document.documentElement.getAttribute('data-theme');
-  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-  document.documentElement.setAttribute('data-theme', newTheme);
-  localStorage.setItem('nathe_theme', newTheme);
-  updateThemeIcon(newTheme);
-}
-
-function updateThemeIcon(theme) {
-  const icon = document.getElementById('themeIcon');
-  if (icon) {
-    icon.className = theme === 'light' ? "fa-solid fa-sun" : "fa-solid fa-moon";
-  }
-}
-initTheme();
-
-let currentCalDate = new Date();
-let selectedDateStr = new Date().toISOString().split('T')[0];
-
-function initCalendarUI() {
-  const dateInput = document.getElementById('recordDate');
-  const dateText = document.getElementById('selectedDateText');
-  if (dateInput) dateInput.value = selectedDateStr;
-  if (dateText) {
-    const d = new Date(selectedDateStr);
-    dateText.textContent = `${d.getFullYear()}. ${String(d.getMonth()+1).padStart(2,'0')}. ${String(d.getDate()).padStart(2,'0')}`;
-  }
-}
-
-function openCalendar() {
-  const modal = document.getElementById('calModal');
-  if (modal) modal.style.display = 'flex';
-  renderCalendarGrid();
-}
-
-function closeCalendar() {
-  const modal = document.getElementById('calModal');
-  if (modal) modal.style.display = 'none';
-}
-
-function changeMonth(diff) {
-  currentCalDate.setMonth(currentCalDate.getMonth() + diff);
-  renderCalendarGrid();
-}
-
-function renderCalendarGrid() {
-  const year = currentCalDate.getFullYear();
-  const month = currentCalDate.getMonth();
-  const titleEl = document.getElementById('calTitle');
-  if (titleEl) titleEl.textContent = `${year}년 ${month + 1}월`;
-
-  const firstDay = new Date(year, month, 1).getDay();
-  const lastDate = new Date(year, month + 1, 0).getDate();
-  const prevLastDate = new Date(year, month, 0).getDate();
-
-  let daysHtml = '';
-  for (let i = firstDay - 1; i >= 0; i--) {
-    const dayNum = prevLastDate - i;
-    const prevMonth = month === 0 ? 11 : month - 1;
-    const prevYear = month === 0 ? year - 1 : year;
-    const fullStr = `${prevYear}-${String(prevMonth+1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
-    daysHtml += `<div class="cal-cell other-month" onclick="selectDate('${fullStr}')">${dayNum}</div>`;
-  }
-
-  for (let i = 1; i <= lastDate; i++) {
-    const fullStr = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
-    const isSelected = fullStr === selectedDateStr ? 'selected' : '';
-    daysHtml += `<div class="cal-cell ${isSelected}" onclick="selectDate('${fullStr}')">${i}</div>`;
-  }
-
-  const totalCells = firstDay + lastDate;
-  const nextDays = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
-  for (let i = 1; i <= nextDays; i++) {
-    const nextMonth = month === 11 ? 0 : month + 1;
-    const nextYear = month === 11 ? year + 1 : year;
-    const fullStr = `${nextYear}-${String(nextMonth+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
-    daysHtml += `<div class="cal-cell other-month" onclick="selectDate('${fullStr}')">${i}</div>`;
-  }
-
-  const gridEl = document.getElementById('calDays');
-  if (gridEl) gridEl.innerHTML = daysHtml;
-}
-
-function selectDate(dateStr) {
-  selectedDateStr = dateStr;
-  const dateInput = document.getElementById('recordDate');
-  const dateText = document.getElementById('selectedDateText');
-  if (dateInput) dateInput.value = dateStr;
-  if (dateText) {
-    const d = new Date(dateStr);
-    dateText.textContent = `${d.getFullYear()}. ${String(d.getMonth()+1).padStart(2,'0')}. ${String(d.getDate()).padStart(2,'0')}`;
-  }
-  closeCalendar();
-}
-
-let records = [];
-
-// [백업 기능 관련 함수들]
-function openBackupModal() {
-  document.getElementById('backupModal').style.display = 'flex';
-  renderBackupList();
-}
-
-function closeBackupModal() {
-  document.getElementById('backupModal').style.display = 'none';
-}
-
-function createBackup() {
-  const now = new Date();
-  const yy = String(now.getFullYear()).slice(-2);
-  const mm = String(now.getMonth() + 1).padStart(2, '0');
-  const dd = String(now.getDate()).padStart(2, '0');
-  const dateKey = `${yy}-${mm}-${dd}`;
-
-  let backups = JSON.parse(localStorage.getItem('nathe_backups')) || {};
-  
-  let vCount = 1;
-  while (backups[`${dateKey}:v${vCount}`]) {
-    vCount++;
-  }
-  const versionKey = `${dateKey}:v${vCount}`;
-
-  backups[versionKey] = records;
-  localStorage.setItem('nathe_backups', JSON.stringify(backups));
-  alert(`[${versionKey}] 백업이 완료되었습니다!`);
-  renderBackupList();
-}
-
-function renderBackupList() {
-  const backupListEl = document.getElementById('backupList');
-  let backups = JSON.parse(localStorage.getItem('nathe_backups')) || {};
-  let keys = Object.keys(backups).sort().reverse();
-
-  if (keys.length === 0) {
-    backupListEl.innerHTML = `<div style="text-align: center; padding: 20px 0; color: var(--sub-text); font-size: 11px;">저장된 백업 내역이 없습니다.</div>`;
-    return;
-  }
-
-  let html = '';
-  keys.forEach(key => {
-    let count = Array.isArray(backups[key]) ? backups[key].length : 0;
-    html += `<div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--input-bg); border: var(--input-border); border-radius: 12px;">
-      <div style="display: flex; flex-direction: column;">
-        <span style="font-size: 12px; font-weight: 700; color: #38bdf8;">${key}</span>
-        <span style="font-size: 10px; color: var(--sub-text);">기록 ${count}건 포함</span>
-      </div>
-      <div style="display: flex; gap: 6px;">
-        <button type="button" onclick="restoreBackup('${key}')" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; font-weight: 700; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 11px;">[복원]</button>
-        <button type="button" onclick="deleteBackup('${key}')" style="background: none; border: none; color: var(--sub-text); cursor: pointer; font-size: 12px; padding: 4px;"><i class="fa-solid fa-trash-can"></i></button>
-      </div>
-    </div>`;
-  });
-  backupListEl.innerHTML = html;
-}
-
-function restoreBackup(key) {
-  if (confirm(`[${key}] 백업 데이터로 복원하시겠습니까? 현재 화면의 데이터가 해당 시점의 데이터로 교체됩니다.`)) {
-    let backups = JSON.parse(localStorage.getItem('nathe_backups')) || {};
-    if (backups[key]) {
-      records = backups[key];
-      saveToServer();
-      closeBackupModal();
-      alert('성공적으로 복원되었습니다!');
+  function initCalendarUI() {
+    const dateInput = document.getElementById('recordDate');
+    const dateText = document.getElementById('selectedDateText');
+    if (dateInput) dateInput.value = selectedDateStr;
+    if (dateText) {
+      const d = new Date(selectedDateStr);
+      dateText.textContent = `${d.getFullYear()}. ${String(d.getMonth() + 1).padStart(2, '0')}. ${String(d.getDate()).padStart(2, '0')}`;
     }
   }
-}
 
-function deleteBackup(key) {
-  if (confirm(`[${key}] 백업 파일을 삭제하시겠습니까?`)) {
-    let backups = JSON.parse(localStorage.getItem('nathe_backups')) || {};
-    delete backups[key];
-    localStorage.setItem('nathe_backups', JSON.stringify(backups));
+  function openCalendar() {
+    const modal = document.getElementById('calModal');
+    if (modal) modal.style.display = 'flex';
+    renderCalendarGrid();
+  }
+
+  function closeCalendar() {
+    const modal = document.getElementById('calModal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function changeMonth(diff) {
+    currentCalDate.setMonth(currentCalDate.getMonth() + diff);
+    renderCalendarGrid();
+  }
+
+  function renderCalendarGrid() {
+    const year = currentCalDate.getFullYear();
+    const month = currentCalDate.getMonth();
+    const titleEl = document.getElementById('calTitle');
+    if (titleEl) titleEl.textContent = `${year}년 ${month + 1}월`;
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
+    const prevLastDate = new Date(year, month, 0).getDate();
+
+    let daysHtml = '';
+    for (let i = firstDay - 1; i >= 0; i--) {
+      const dayNum = prevLastDate - i;
+      const prevMonth = month === 0 ? 11 : month - 1;
+      const prevYear = month === 0 ? year - 1 : year;
+      const fullStr = `${prevYear}-${String(prevMonth + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+      daysHtml += `<div class="cal-cell other-month" onclick="selectDate('${fullStr}')">${dayNum}</div>`;
+    }
+
+    for (let i = 1; i <= lastDate; i++) {
+      const fullStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+      const isSelected = fullStr === selectedDateStr ? 'selected' : '';
+      daysHtml += `<div class="cal-cell ${isSelected}" onclick="selectDate('${fullStr}')">${i}</div>`;
+    }
+
+    const totalCells = firstDay + lastDate;
+    const nextDays = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+    for (let i = 1; i <= nextDays; i++) {
+      const nextMonth = month === 11 ? 0 : month + 1;
+      const nextYear = month === 11 ? year + 1 : year;
+      const fullStr = `${nextYear}-${String(nextSkillMonth = nextMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+      daysHtml += `<div class="cal-cell other-month" onclick="selectDate('${nextYear}-${String(nextMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}')">${i}</div>`;
+    }
+
+    // 위 구문의 nextYear/nextMonth 안전 장치 수정 적용
+    daysHtml = '';
+    for (let i = firstDay - 1; i >= 0; i--) {
+      const dayNum = prevLastDate - i;
+      const prevMonth = month === 0 ? 11 : month - 1;
+      const prevYear = month === 0 ? year - 1 : year;
+      const fullStr = `${prevYear}-${String(prevMonth + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+      daysHtml += `<div class="cal-cell other-month" onclick="selectDate('${fullStr}')">${dayNum}</div>`;
+    }
+    for (let i = 1; i <= lastDate; i++) {
+      const fullStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+      const isSelected = fullStr === selectedDateStr ? 'selected' : '';
+      daysHtml += `<div class="cal-cell ${isSelected}" onclick="selectDate('${fullStr}')">${i}</div>`;
+    }
+    for (let i = 1; i <= nextDays; i++) {
+      const nextMonth = month === 11 ? 0 : month + 1;
+      const nextYear = month === 11 ? year + 1 : year;
+      const fullStr = `${nextYear}-${String(nextMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+      daysHtml += `<div class="cal-cell other-month" onclick="selectDate('${fullStr}')">${i}</div>`;
+    }
+
+    const gridEl = document.getElementById('calDays');
+    if (gridEl) gridEl.innerHTML = daysHtml;
+  }
+
+  function selectDate(dateStr) {
+    selectedDateStr = dateStr;
+    const dateInput = document.getElementById('recordDate');
+    const dateText = document.getElementById('selectedDateText');
+    if (dateInput) dateInput.value = dateStr;
+    if (dateText) {
+      const d = new Date(dateStr);
+      dateText.textContent = `${d.getFullYear()}. ${String(d.getMonth() + 1).padStart(2, '0')}. ${String(d.getDate()).padStart(2, '0')}`;
+    }
+    closeCalendar();
+  }
+
+  let records = [];
+
+  function openBackupModal() {
+    document.getElementById('backupModal').style.display = 'flex';
     renderBackupList();
   }
-}
 
-// [서버 API 연동] Node.js 서버 /api/data 에서 최신 데이터 불러오기 + 초기화 방어 자동 동기화
-async function loadFromServer() {
-  try {
-    const res = await fetch('/api/data', { cache: 'no-store' });
-    if (res.ok) {
-      const jsonData = await res.json();
-      const serverRecords = Array.isArray(jsonData) ? jsonData : (jsonData.records || []);
-      
-      // 만약 서버가 초기화되어 데이터가 비어있고('[]'), 내 로컬 브라우저에 기록이 남아있다면 서버를 자동으로 복구합니다!
-      if (serverRecords.length === 0) {
-        const localSaved = JSON.parse(localStorage.getItem('nathe_car_records')) || [];
-        if (localSaved.length > 0) {
-          records = localSaved;
-          await saveToServer(); // 서버에 즉시 밀어넣어 초기화 방어
-          checkAndGenerateAutomaticRecords();
-          renderApp();
-          return;
-        }
-      }
+  function closeBackupModal() {
+    document.getElementById('backupModal').style.display = 'none';
+  }
 
-      records = serverRecords;
-      checkAndGenerateAutomaticRecords();
-      renderApp();
+  function createBackup() {
+    const now = new Date();
+    const yy = String(now.getFullYear()).slice(-2);
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const dateKey = `${yy}-${mm}-${dd}`;
+
+    let backups = JSON.parse(localStorage.getItem('nathe_backups')) || {};
+    let vCount = 1;
+    while (backups[`${dateKey}:v${vCount}`]) {
+      vCount++;
+    }
+    const versionKey = `${dateKey}:v${vCount}`;
+
+    backups[versionKey] = records;
+    localStorage.setItem('nathe_backups', JSON.stringify(backups));
+    alert(`[${versionKey}] 백업이 완료되었습니다!`);
+    renderBackupList();
+  }
+
+  function renderBackupList() {
+    const backupListEl = document.getElementById('backupList');
+    let backups = JSON.parse(localStorage.getItem('nathe_backups')) || {};
+    let keys = Object.keys(backups).sort().reverse();
+
+    if (keys.length === 0) {
+      backupListEl.innerHTML = `<div style="text-align: center; padding: 20px 0; color: var(--sub-text); font-size: 11px;">저장된 백업 내역이 없습니다.</div>`;
       return;
     }
-  } catch (e) {
-    console.warn("서버 API 로드 실패, 로컬 저장소 사용");
-  }
 
-  records = JSON.parse(localStorage.getItem('nathe_car_records')) || [];
-  checkAndGenerateAutomaticRecords();
-  renderApp();
-}
-
-// [서버 API 연동] Node.js 서버 /api/data 로 실시간 데이터 저장하기 (POST)
-async function saveToServer() {
-  localStorage.setItem('nathe_car_records', JSON.stringify(records));
-  updateFilterYears();
-  renderApp();
-
-  try {
-    const res = await fetch('/api/data', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(records)
-    });
-    if (!res.ok) {
-      console.warn("서버 저장 실패");
-    }
-  } catch (err) {
-    console.warn("서버 통신 에러 (로컬에만 저장됨)");
-  }
-}
-
-// [핵심 추가] 5분마다 서버에 빈 핑(Ping)을 보내어 15분 절전 모드 진입 방지 (Keep-Alive)
-setInterval(async () => {
-  try {
-    await fetch('/api/data', { method: 'GET', cache: 'no-store' });
-  } catch (err) {
-    // 백그라운드 핑 에러 무시
-  }
-}, 5 * 60 * 1000); // 5분 (300,000ms)
-
-function checkAndGenerateAutomaticRecords() {
-  let modified = false; 
-  const now = new Date(); 
-  const currentYear = now.getFullYear(); 
-  const currentMonth = now.getMonth() + 1;
-
-  let targetMonths = [];
-  for (let m = 7; m <= 10; m++) { targetMonths.push({ year: 2026, month: m }); }
-  if (currentYear > 2026 || (currentYear === 2026 && currentMonth >= 11)) {
-    for (let m = 11; m <= currentMonth; m++) {
-      const checkDate = new Date(currentYear, m - 1, 12);
-      if (now >= checkDate) { targetMonths.push({ year: currentYear, month: m }); }
-    }
-  }
-
-  targetMonths.forEach(item => {
-    const mm = String(item.month).padStart(2, '0'); 
-    const dateStr = `${item.year}-${mm}-12`;
-
-    const subExists = records.some(r => (r.category === '채비 월 구독비' || r.category === '채비 총구독비') && r.date === dateStr);
-    if (!subExists) { 
-      records.push({ id: Date.now() + Math.random(), category: '채비 총구독비', date: dateStr, amount: 4900, memo: `${item.month}월 정기 구독비` }); 
-      modified = true; 
-    }
-
-    const bonusExists = records.some(r => (r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧') && r.date === dateStr);
-    if (!bonusExists) { 
-      records.push({ id: Date.now() + Math.random(), category: '채비 월 보너스 크레딧', date: dateStr, amount: 3000, memo: `${item.month}월 정기 보너스크레딧` }); 
-      modified = true; 
-    }
-  });
-
-  if (modified) { 
-    localStorage.setItem('nathe_car_records', JSON.stringify(records)); 
-  }
-}
-
-const cardSlider = document.getElementById('cardSlider'); 
-const dots = [document.getElementById('dot0'), document.getElementById('dot1'), document.getElementById('dot2'), document.getElementById('dot3')];
-
-if (cardSlider) {
-  cardSlider.addEventListener('scroll', () => {
-    const scrollLeft = cardSlider.scrollLeft; const width = cardSlider.clientWidth; const index = Math.round(scrollLeft / width);
-    updateDots(index);
-  });
-}
-
-function updateDots(index) {
-  dots.forEach((dot, idx) => { 
-    if (dot) {
-      dot.style.width = idx === index ? "16px" : "5px";
-      dot.style.background = idx === index ? "#c084fc" : "rgba(255,255,255,0.2)";
-    }
-  });
-}
-
-function scrollToCard(index) { 
-  if (cardSlider) {
-    cardSlider.scrollTo({ left: cardSlider.clientWidth * index, behavior: 'smooth' }); 
-    updateDots(index);
-  }
-}
-
-const categorySelect = document.getElementById('category'); 
-const amountInput = document.getElementById('amount'); 
-const amountLabel = document.getElementById('amountLabel'); 
-const pointPreview = document.getElementById('pointPreview');
-
-function handleCategoryInput() {
-  if (!categorySelect) return;
-  const cat = categorySelect.value;
-  if (amountInput) amountInput.readOnly = false; 
-  if (amountLabel) amountLabel.textContent = "금액 (원)";
-  if (cat === '채비 카드충전') { updatePointPreview(); } else if (pointPreview) { pointPreview.style.display = 'none'; }
-
-  if (cat.startsWith('채비')) { scrollToCard(0); }
-  else if (cat === '기타 충전소 차감') { scrollToCard(1); }
-  else if (cat === '테슬라 충전지출') { scrollToCard(2); }
-  else if (cat === '정비항목 지출내역') { scrollToCard(3); }
-}
-
-if (amountInput) {
-  amountInput.addEventListener('input', () => { 
-    if (categorySelect && categorySelect.value === '채비 카드충전') { updatePointPreview(); } 
-  });
-}
-
-function updatePointPreview() {
-  if (!amountInput || !pointPreview) return;
-  const val = Number(amountInput.value) || 0; 
-  const earnedPoint = Math.floor(val * 0.05);
-  if (val > 0) { 
-    pointPreview.textContent = `💡 저장 시 5% 적립금 (${earnedPoint.toLocaleString()}원)이 자동 적립됩니다.`; 
-    pointPreview.style.display = 'block'; 
-  } else { 
-    pointPreview.style.display = 'none'; 
-  }
-}
-
-const recordForm = document.getElementById('recordForm');
-if (recordForm) {
-  recordForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const category = categorySelect ? categorySelect.value : '기타'; 
-    const dateInputEl = document.getElementById('recordDate');
-    const date = dateInputEl ? dateInputEl.value : selectedDateStr; 
-    const amount = amountInput ? Number(amountInput.value) : 0; 
-    const memoEl = document.getElementById('memo');
-    const memo = memoEl ? memoEl.value : '';
-
-    records.push({ id: Date.now(), category, date, amount, memo });
-    if (category === '채비 카드충전') {
-      const earnedPoint = Math.floor(amount * 0.05);
-      if (earnedPoint > 0) { records.push({ id: Date.now() + 1, category: '채비 보너스포인트 적립', date, amount: earnedPoint, memo: memo ? `${memo} 충전 적립 5%` : '충전 적립 5%' }); }
-    }
-    saveToServer(); 
-    recordForm.reset(); 
-    initCalendarUI(); 
-    handleCategoryInput();
-  });
-}
-
-const filterCategory = document.getElementById('filterCategory'); 
-const filterYear = document.getElementById('filterYear'); 
-const filterMonth = document.getElementById('filterMonth');
-
-function handleCategoryChange() {
-  if (!filterCategory || !filterYear || !filterMonth) return;
-  const catVal = filterCategory.value;
-  if (!catVal) { 
-    filterYear.value = ""; filterYear.disabled = true; filterYear.innerHTML = '<option value="">연도 선택</option>'; 
-    filterMonth.value = ""; filterMonth.disabled = true; filterMonth.innerHTML = '<option value="">월 선택</option>'; 
-  } else { 
-    updateFilterYears(); filterYear.disabled = false; 
-    filterMonth.value = ""; filterMonth.disabled = true; filterMonth.innerHTML = '<option value="">월 선택</option>'; 
-  }
-  renderApp();
-}
-
-function handleYearChange() {
-  if (!filterYear || !filterMonth) return;
-  const yearVal = filterYear.value;
-  if (!yearVal) { filterMonth.value = ""; filterMonth.disabled = true; filterMonth.innerHTML = '<option value="">월 선택</option>'; } 
-  else { updateFilterMonths(); filterMonth.disabled = false; }
-  renderApp();
-}
-
-function updateFilterYears() {
-  if (!filterCategory || !filterYear) return;
-  const catVal = filterCategory.value; 
-  const filtered = catVal ? records.filter(r => r.category === catVal || (catVal === '채비 총구독비' && (r.category === '채비 월 구독비' || r.category === '채비 총구독비')) || (catVal === '채비 월 보너스 크레딧' && (r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧')) || (catVal === '채비 보너스포인트 적립' && r.category === '채비 보너스포인트 적립')) : records;
-  const years = [...new Set(filtered.map(r => r.date.split('-')[0]))].sort().reverse();
-  const currentYear = filterYear.value; 
-  let optionsHtml = '<option value="">모든 연도</option>';
-  years.forEach(y => { optionsHtml += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}년</option>`; });
-  filterYear.innerHTML = optionsHtml;
-  if (years.length === 0) { filterYear.value = ""; filterYear.disabled = true; }
-}
-
-function updateFilterMonths() {
-  if (!filterCategory || !filterYear || !filterMonth) return;
-  const catVal = filterCategory.value; const yearVal = filterYear.value;
-  const filtered = records.filter(r => { const [y, m] = r.date.split('-'); const matchCat = !catVal || r.category === catVal || (catVal === '채비 총구독비' && (r.category === '채비 월 구독비' || r.category === '채비 총구독비')) || (catVal === '채비 월 보너스 크레딧' && (r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧')) || (catVal === '채비 보너스포인트 적립' && r.category === '채비 보너스포인트 적립'); return matchCat && (!yearVal || y === yearVal); });
-  const months = [...new Set(filtered.map(r => r.date.split('-')[1]))].sort();
-  const currentMonth = filterMonth.value; 
-  let optionsHtml = '<option value="">모든 월</option>';
-  months.forEach(m => { optionsHtml += `<option value="${m}" ${m === currentMonth ? 'selected' : ''}>${Number(m)}월</option>`; });
-  filterMonth.innerHTML = optionsHtml;
-  if (months.length === 0) { filterMonth.value = ""; filterMonth.disabled = true; }
-}
-
-function deleteRecord(id) { 
-  if(confirm('정말 이 내역을 삭제하시겠습니까?')) { 
-    records = records.filter(r => r.id !== id); 
-    saveToServer(); 
-  } 
-}
-
-function renderApp() {
-  let totalRealCharge = 0, totalExpense = 0, totalBenefit = 0, totalOtherCharge = 0, otherChargeCount = 0, totalTesla = 0, teslaCount = 0, totalGeneralExpense = 0, generalExpenseCount = 0, manualRemaining = null, latestRemainingDate = "", cardAdvanceTotal = 0, subscriptionTotal = 0;
-
-  records.forEach(r => {
-    if (r.category === '채비 카드충전') { cardAdvanceTotal += r.amount; totalRealCharge += r.amount; totalExpense += r.amount; }
-    else if (r.category === '채비 카드 잔여') { if (!latestRemainingDate || r.date >= latestRemainingDate) { manualRemaining = r.amount; latestRemainingDate = r.date; } }
-    else if (r.category === '채비 보너스포인트 적립' || r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧' || r.category === '채비 번개크레딧') { totalBenefit += r.amount; }
-    else if (r.category === '채비 월 구독비' || r.category === '채비 총구독비') { subscriptionTotal += r.amount; totalExpense += r.amount; }
-    else if (r.category === '기타 충전소 차감') { totalOtherCharge += r.amount; otherChargeCount++; totalExpense += r.amount; }
-    else if (r.category === '테슬라 충전지출') { totalTesla += r.amount; teslaCount++; totalExpense += r.amount; }
-    else if (r.category === '정비항목 지출내역' || r.category === '기타 지출내역') { totalGeneralExpense += r.amount; generalExpenseCount++; totalExpense += r.amount; }
-    else { totalExpense += r.amount; }
-  });
-
-  let finalCardRemaining = manualRemaining !== null ? manualRemaining : (totalRealCharge + totalBenefit);
-  
-  let netCardUsage = cardAdvanceTotal - finalCardRemaining;
-  if (netCardUsage < 0) netCardUsage = 0;
-  let realUsedAmount = netCardUsage + subscriptionTotal;
-
-  let chargeDiscountAmount = Math.floor(realUsedAmount * 0.06);
-
-  let calculatedBenefit = totalBenefit + (cardAdvanceTotal - finalCardRemaining - netCardUsage);
-  if (calculatedBenefit < totalBenefit) calculatedBenefit = totalBenefit;
-
-  document.getElementById('cardRemaining').textContent = finalCardRemaining.toLocaleString() + " 원";
-  document.getElementById('cardAdvanceDisplay').textContent = cardAdvanceTotal.toLocaleString() + " 원";
-  document.getElementById('realUsedDisplay').textContent = realUsedAmount.toLocaleString() + " 원";
-  document.getElementById('chargeDiscountDisplay').textContent = chargeDiscountAmount.toLocaleString() + " 원";
-  document.getElementById('totalBenefitDisplay').textContent = calculatedBenefit.toLocaleString() + " 원";
-  document.getElementById('totalOtherChargeDisplay').innerHTML = `${totalOtherCharge.toLocaleString()} <span style="font-size: 14px; font-weight: normal; opacity: 0.7;">원</span>`;
-  document.getElementById('otherChargeCountDisplay').textContent = `${otherChargeCount}건`;
-  document.getElementById('totalTeslaDisplay').innerHTML = `${totalTesla.toLocaleString()} <span style="font-size: 14px; font-weight: normal; opacity: 0.7;">원</span>`;
-  document.getElementById('teslaCountDisplay').textContent = `${teslaCount}건`;
-  document.getElementById('totalGeneralExpenseDisplay').innerHTML = `${totalGeneralExpense.toLocaleString()} <span style="font-size: 14px; font-weight: normal; opacity: 0.7;">원</span>`;
-  document.getElementById('generalExpenseCountDisplay').textContent = `${generalExpenseCount}건`;
-  document.getElementById('totalExpenseDisplay').textContent = `${totalExpense.toLocaleString()} 원`;
-
-  const catVal = filterCategory ? filterCategory.value : ""; 
-  const yearVal = filterYear ? filterYear.value : ""; 
-  const monthVal = filterMonth ? filterMonth.value : "";
-
-  let displayedRecords = records.filter(r => {
-    const [y, m] = r.date.split('-');
-    const matchCat = !catVal || r.category === catVal || (catVal === '채비 총구독비' && (r.category === '채비 월 구독비' || r.category === '채비 총구독비')) || (catVal === '채비 월 보너스 크레딧' && (r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧')) || (catVal === '채비 보너스포인트 적립' && r.category === '채비 보너스포인트 적립');
-    const matchYear = !yearVal || y === yearVal; const matchMonth = !monthVal || m === monthVal;
-    return matchCat && matchYear && matchMonth;
-  });
-  displayedRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  let filteredSum = displayedRecords.reduce((acc, cur) => acc + (Number(cur.amount) || 0), 0);
-
-  const recordCountEl = document.getElementById('recordCount');
-  if (recordCountEl) {
-    recordCountEl.textContent = `${displayedRecords.length}건 (합산: ${filteredSum.toLocaleString()}원)`;
-  }
-
-  const recordList = document.getElementById('recordList');
-  if (!recordList) return;
-  if (displayedRecords.length === 0) {
-    recordList.innerHTML = `<div style="text-align: center; padding: 24px 0; color: var(--sub-text); font-size: 11px;"><i class="fa-regular fa-folder-open" style="font-size: 20px; margin-bottom: 6px; display: block;"></i>조건에 일치하는 기록이 없습니다.</div>`;
-    return;
-  }
-
-  let html = '';
-  displayedRecords.forEach(r => {
-    let badgeBg = 'rgba(168, 85, 247, 0.1)';
-    let badgeColor = '#c084fc';
-    let displaySign = '';
-    let amountColor = 'var(--text-color)';
-
-    const catName = (r.category === '채비 월 구독비' || r.category === '채비 총구독비') ? '[채비] 총구독비' : ((r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧') ? '[채비] 월 보너스 크레딧' : (r.category === '채비 보너스포인트 적립' ? '[채비] 충전 적립 5%' : r.category));
-
-    if (r.category === '채비 카드충전') { badgeBg = 'rgba(34, 197, 94, 0.1)'; badgeColor = '#22c55e'; displaySign = '-'; amountColor = '#ef4444'; }
-    else if (r.category === '채비 카드 잔여') { badgeBg = 'rgba(168, 85, 247, 0.1)'; badgeColor = '#c084fc'; }
-    else if (r.category === '채비 월 구독비' || r.category === '채비 총구독비') { badgeBg = 'rgba(6, 182, 212, 0.1)'; badgeColor = '#06b6d4'; displaySign = '-'; amountColor = '#ef4444'; }
-    else if (r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧' || r.category === '채비 보너스포인트 적립' || r.category === '채비 번개크레딧') { badgeBg = 'rgba(168, 85, 247, 0.1)'; badgeColor = '#c084fc'; }
-    else if (r.category === '기타 충전소 차감') { badgeBg = 'rgba(147, 51, 234, 0.1)'; badgeColor = '#9333ea'; displaySign = '-'; amountColor = '#ef4444'; }
-    else if (r.category === '테슬라 충전지출') { badgeBg = 'rgba(239, 68, 68, 0.15)'; badgeColor = '#ef4444'; displaySign = '-'; amountColor = '#ef4444'; }
-    else if (r.category === '정비항목 지출내역' || r.category === '기타 지출내역') { badgeBg = 'rgba(51, 65, 85, 0.15)'; badgeColor = 'var(--sub-text)'; displaySign = '-'; amountColor = '#ef4444'; }
-
-    html += `<div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--input-bg); border: var(--input-border); border-radius: 12px; transition: 0.2s;">
-      <div style="display: flex; flex-direction: column; gap: 3px;">
-        <div style="display: flex; align-items: center; gap: 5px;">
-          <span style="font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: ${badgeBg}; color: ${badgeColor};">${catName}</span>
-          <span style="font-size: 10px; color: var(--sub-text);">${r.date}</span>
+    let html = '';
+    keys.forEach(key => {
+      let count = Array.isArray(backups[key]) ? backups[key].length : 0;
+      html += `<div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--input-bg); border: var(--input-border); border-radius: 12px;">
+        <div style="display: flex; flex-direction: column;">
+          <span style="font-size: 12px; font-weight: 700; color: #38bdf8;">${key}</span>
+          <span style="font-size: 10px; color: var(--sub-text);">기록 ${count}건 포함</span>
         </div>
-        <p style="font-size: 11px; font-weight: 500; color: var(--text-color);">${r.memo ? r.memo : '메모 없음'}</p>
-      </div>
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 13px; font-weight: 800; color: ${amountColor};">${displaySign}${r.amount.toLocaleString()}원</span>
-        <button type="button" onclick="deleteRecord(${r.id})" style="background: none; border: none; color: var(--sub-text); cursor: pointer; font-size: 12px;"><i class="fa-solid fa-trash-can"></i></button>
-      </div>
-    </div>`;
-  });
-  recordList.innerHTML = html;
-}
+        <div style="display: flex; gap: 6px;">
+          <button type="button" onclick="restoreBackup('${key}')" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; font-weight: 700; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 11px;">[복원]</button>
+          <button type="button" onclick="deleteBackup('${key}')" style="background: none; border: none; color: var(--sub-text); cursor: pointer; font-size: 12px; padding: 4px;"><i class="fa-solid fa-trash-can"></i></button>
+        </div>
+      </div>`;
+    });
+    backupListEl.innerHTML = html;
+  }
 
-// 최초 실행 시 서버 API에서 데이터 호출
-initCalendarUI();
-loadFromServer();
+  function restoreBackup(key) {
+    if (confirm(`[${key}] 백업 데이터로 복원하시겠습니까? 현재 화면의 데이터가 해당 시점의 데이터로 교체됩니다.`)) {
+      let backups = JSON.parse(localStorage.getItem('nathe_backups')) || {};
+      if (backups[key]) {
+        records = backups[key];
+        saveToServer();
+        closeBackupModal();
+        alert('성공적으로 복원되었습니다!');
+      }
+    }
+  }
+
+  function deleteBackup(key) {
+    if (confirm(`[${key}] 백업 파일을 삭제하시겠습니까?`)) {
+      let backups = JSON.parse(localStorage.getItem('nathe_backups')) || {};
+      delete backups[key];
+      localStorage.setItem('nathe_backups', JSON.stringify(backups));
+      renderBackupList();
+    }
+  }
+
+  async function loadFromServer() {
+    try {
+      const res = await fetch('/api/data', { cache: 'no-store' });
+      if (res.ok) {
+        const jsonData = await res.json();
+        const serverRecords = Array.isArray(jsonData) ? jsonData : (jsonData.records || []);
+
+        if (serverRecords.length === 0) {
+          const localSaved = JSON.parse(localStorage.getItem('nathe_car_records')) || [];
+          if (localSaved.length > 0) {
+            records = localSaved;
+            await saveToServer();
+            checkAndGenerateAutomaticRecords();
+            renderApp();
+            return;
+          }
+        }
+
+        records = serverRecords;
+        checkAndGenerateAutomaticRecords();
+        renderApp();
+        return;
+      }
+    } catch (e) {
+      console.warn("서버 API 로드 실패, 로컬 저장소 사용");
+    }
+
+    records = JSON.parse(localStorage.getItem('nathe_car_records')) || [];
+    checkAndGenerateAutomaticRecords();
+    renderApp();
+  }
+
+  async function saveToServer() {
+    localStorage.setItem('nathe_car_records', JSON.stringify(records));
+    updateFilterYears();
+    renderApp();
+
+    try {
+      await fetch('/api/data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(records)
+      });
+    } catch (err) {
+      console.warn("서버 통신 에러 (로컬에만 저장됨)");
+    }
+  }
+
+  // 5분마다 서버 절전 모드 진입 방지 (Keep-Alive 핑)
+  setInterval(async () => {
+    try {
+      await fetch('/api/data', { method: 'GET', cache: 'no-store' });
+    } catch (err) {}
+  }, 5 * 60 * 1000);
+
+  function checkAndGenerateAutomaticRecords() {
+    let modified = false; 
+    const now = new Date(); 
+    const currentYear = now.getFullYear(); 
+    const currentMonth = now.getMonth() + 1;
+
+    let targetMonths = [];
+    for (let m = 7; m <= 10; m++) { targetMonths.push({ year: 2026, month: m }); }
+    if (currentYear > 2026 || (currentYear === 2026 && currentMonth >= 11)) {
+      for (let m = 11; m <= currentMonth; m++) {
+        const checkDate = new Date(currentYear, m - 1, 12);
+        if (now >= checkDate) { targetMonths.push({ year: currentYear, month: m }); }
+      }
+    }
+
+    targetMonths.forEach(item => {
+      const mm = String(item.month).padStart(2, '0'); 
+      const dateStr = `${item.year}-${mm}-12`;
+
+      const subExists = records.some(r => (r.category === '채비 월 구독비' || r.category === '채비 총구독비') && r.date === dateStr);
+      if (!subExists) { 
+        records.push({ id: Date.now() + Math.random(), category: '채비 총구독비', date: dateStr, amount: 4900, memo: `${item.month}월 정기 구독비` }); 
+        modified = true; 
+      }
+
+      const bonusExists = records.some(r => (r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧') && r.date === dateStr);
+      if (!bonusExists) { 
+        records.push({ id: Date.now() + Math.random(), category: '채비 월 보너스 크레딧', date: dateStr, amount: 3000, memo: `${item.month}월 정기 보너스크레딧` }); 
+        modified = true; 
+      }
+    });
+
+    if (modified) { 
+      localStorage.setItem('nathe_car_records', JSON.stringify(records)); 
+    }
+  }
+
+  const cardSlider = document.getElementById('cardSlider'); 
+  const dots = [document.getElementById('dot0'), document.getElementById('dot1'), document.getElementById('dot2'), document.getElementById('dot3')];
+
+  if (cardSlider) {
+    cardSlider.addEventListener('scroll', () => {
+      const scrollLeft = cardSlider.scrollLeft; const width = cardSlider.clientWidth; const index = Math.round(scrollLeft / width);
+      updateDots(index);
+    });
+  }
+
+  function updateDots(index) {
+    dots.forEach((dot, idx) => { 
+      if (dot) {
+        dot.style.width = idx === index ? "16px" : "5px";
+        dot.style.background = idx === index ? "#38bdf8" : "rgba(255,255,255,0.2)";
+      }
+    });
+  }
+
+  function scrollToCard(index) { 
+    if (cardSlider) {
+      cardSlider.scrollTo({ left: cardSlider.clientWidth * index, behavior: 'smooth' }); 
+      updateDots(index);
+    }
+  }
+
+  const categorySelect = document.getElementById('category'); 
+  const amountInput = document.getElementById('amount'); 
+  const amountLabel = document.getElementById('amountLabel'); 
+  const pointPreview = document.getElementById('pointPreview');
+
+  function handleCategoryInput() {
+    if (!categorySelect) return;
+    const cat = categorySelect.value;
+    if (amountInput) amountInput.readOnly = false; 
+    if (amountLabel) amountLabel.textContent = "금액 (원)";
+    if (cat === '채비 카드충전') { updatePointPreview(); } else if (pointPreview) { pointPreview.style.display = 'none'; }
+
+    if (cat.startsWith('채비')) { scrollToCard(0); }
+    else if (cat === '기타 충전소 차감') { scrollToCard(1); }
+    else if (cat === '테슬라 충전지출') { scrollToCard(2); }
+    else if (cat === '정비항목 지출내역') { scrollToCard(3); }
+  }
+
+  if (amountInput) {
+    amountInput.addEventListener('input', () => { 
+      if (categorySelect && categorySelect.value === '채비 카드충전') { updatePointPreview(); } 
+    });
+  }
+
+  function updatePointPreview() {
+    if (!amountInput || !pointPreview) return;
+    const val = Number(amountInput.value) || 0; 
+    const earnedPoint = Math.floor(val * 0.05);
+    if (val > 0) { 
+      pointPreview.textContent = `💡 저장 시 5% 적립금 (${earnedPoint.toLocaleString()}원)이 자동 적립됩니다.`; 
+      pointPreview.style.display = 'block'; 
+    } else { 
+      pointPreview.style.display = 'none'; 
+    }
+  }
+
+  const recordForm = document.getElementById('recordForm');
+  if (recordForm) {
+    recordForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const category = categorySelect ? categorySelect.value : '기타'; 
+      const dateInputEl = document.getElementById('recordDate');
+      const date = dateInputEl ? dateInputEl.value : selectedDateStr; 
+      const amount = amountInput ? Number(amountInput.value) : 0; 
+      const memoEl = document.getElementById('memo');
+      const memo = memoEl ? memoEl.value : '';
+
+      records.push({ id: Date.now(), category, date, amount, memo });
+      if (category === '채비 카드충전') {
+        const earnedPoint = Math.floor(amount * 0.05);
+        if (earnedPoint > 0) { records.push({ id: Date.now() + 1, category: '채비 보너스포인트 적립', date, amount: earnedPoint, memo: memo ? `${memo} 충전 적립 5%` : '충전 적립 5%' }); }
+      }
+      saveToServer(); 
+      recordForm.reset(); 
+      initCalendarUI(); 
+      handleCategoryInput();
+    });
+  }
+
+  const filterCategory = document.getElementById('filterCategory'); 
+  const filterYear = document.getElementById('filterYear'); 
+  const filterMonth = document.getElementById('filterMonth');
+
+  function handleCategoryChange() {
+    if (!filterCategory || !filterYear || !filterMonth) return;
+    const catVal = filterCategory.value;
+    if (!catVal) { 
+      filterYear.value = ""; filterYear.disabled = true; filterYear.innerHTML = '<option value="">연도 선택</option>'; 
+      filterMonth.value = ""; filterMonth.disabled = true; filterMonth.innerHTML = '<option value="">월 선택</option>'; 
+    } else { 
+      updateFilterYears(); filterYear.disabled = false; 
+      filterMonth.value = ""; filterMonth.disabled = true; filterMonth.innerHTML = '<option value="">월 선택</option>'; 
+    }
+    renderApp();
+  }
+
+  function handleYearChange() {
+    if (!filterYear || !filterMonth) return;
+    const yearVal = filterYear.value;
+    if (!yearVal) { filterMonth.value = ""; filterMonth.disabled = true; filterMonth.innerHTML = '<option value="">월 선택</option>'; } 
+    else { updateFilterMonths(); filterMonth.disabled = false; }
+    renderApp();
+  }
+
+  function updateFilterYears() {
+    if (!filterCategory || !filterYear) return;
+    const catVal = filterCategory.value; 
+    const filtered = catVal ? records.filter(r => r.category === catVal || (catVal === '채비 총구독비' && (r.category === '채비 월 구독비' || r.category === '채비 총구독비')) || (catVal === '채비 월 보너스 크레딧' && (r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧')) || (catVal === '채비 보너스포인트 적립' && r.category === '채비 보너스포인트 적립')) : records;
+    const years = [...new Set(filtered.map(r => r.date.split('-')[0]))].sort().reverse();
+    const currentYear = filterYear.value; 
+    let optionsHtml = '<option value="">모든 연도</option>';
+    years.forEach(y => { optionsHtml += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}년</option>`; });
+    filterYear.innerHTML = optionsHtml;
+    if (years.length === 0) { filterYear.value = ""; filterYear.disabled = true; }
+  }
+
+  function updateFilterMonths() {
+    if (!filterCategory || !filterYear || !filterMonth) return;
+    const catVal = filterCategory.value; const yearVal = filterYear.value;
+    const filtered = records.filter(r => { const [y, m] = r.date.split('-'); const matchCat = !catVal || r.category === catVal || (catVal === '채비 총구독비' && (r.category === '채비 월 구독비' || r.category === '채비 총구독비')) || (catVal === '채비 월 보너스 크레딧' && (r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧')) || (catVal === '채비 보너스포인트 적립' && r.category === '채비 보너스포인트 적립'); return matchCat && (!yearVal || y === yearVal); });
+    const months = [...new Set(filtered.map(r => r.date.split('-')[1]))].sort();
+    const currentMonth = filterMonth.value; 
+    let optionsHtml = '<option value="">모든 월</option>';
+    months.forEach(m => { optionsHtml += `<option value="${m}" ${m === currentMonth ? 'selected' : ''}>${Number(m)}월</option>`; });
+    filterMonth.innerHTML = optionsHtml;
+    if (months.length === 0) { filterMonth.value = ""; filterMonth.disabled = true; }
+  }
+
+  function deleteRecord(id) { 
+    if(confirm('정말 이 내역을 삭제하시겠습니까?')) { 
+      records = records.filter(r => r.id !== id); 
+      saveToServer(); 
+    } 
+  }
+
+  function renderApp() {
+    let totalRealCharge = 0, totalExpense = 0, totalBenefit = 0, totalOtherCharge = 0, otherChargeCount = 0, totalTesla = 0, teslaCount = 0, totalGeneralExpense = 0, generalExpenseCount = 0, manualRemaining = null, latestRemainingDate = "", cardAdvanceTotal = 0, subscriptionTotal = 0;
+
+    records.forEach(r => {
+      if (r.category === '채비 카드충전') { cardAdvanceTotal += r.amount; totalRealCharge += r.amount; totalExpense += r.amount; }
+      else if (r.category === '채비 카드 잔여') { if (!latestRemainingDate || r.date >= latestRemainingDate) { manualRemaining = r.amount; latestRemainingDate = r.date; } }
+      else if (r.category === '채비 보너스포인트 적립' || r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧' || r.category === '채비 번개크레딧') { totalBenefit += r.amount; }
+      else if (r.category === '채비 월 구독비' || r.category === '채비 총구독비') { subscriptionTotal += r.amount; totalExpense += r.amount; }
+      else if (r.category === '기타 충전소 차감') { totalOtherCharge += r.amount; otherChargeCount++; totalExpense += r.amount; }
+      else if (r.category === '테슬라 충전지출') { totalTesla += r.amount; teslaCount++; totalExpense += r.amount; }
+      else if (r.category === '정비항목 지출내역' || r.category === '기타 지출내역') { totalGeneralExpense += r.amount; generalExpenseCount++; totalExpense += r.amount; }
+      else { totalExpense += r.amount; }
+    });
+
+    let finalCardRemaining = manualRemaining !== null ? manualRemaining : (totalRealCharge + totalBenefit);
+    
+    let netCardUsage = cardAdvanceTotal - finalCardRemaining;
+    if (netCardUsage < 0) netCardUsage = 0;
+    let realUsedAmount = netCardUsage + subscriptionTotal;
+
+    let chargeDiscountAmount = Math.floor(realUsedAmount * 0.06);
+
+    let calculatedBenefit = totalBenefit + (cardAdvanceTotal - finalCardRemaining - netCardUsage);
+    if (calculatedBenefit < totalBenefit) calculatedBenefit = totalBenefit;
+
+    document.getElementById('cardRemaining').textContent = finalCardRemaining.toLocaleString() + " 원";
+    document.getElementById('cardAdvanceDisplay').textContent = cardAdvanceTotal.toLocaleString() + " 원";
+    document.getElementById('realUsedDisplay').textContent = realUsedAmount.toLocaleString() + " 원";
+    document.getElementById('chargeDiscountDisplay').textContent = chargeDiscountAmount.toLocaleString() + " 원";
+    document.getElementById('totalBenefitDisplay').textContent = calculatedBenefit.toLocaleString() + " 원";
+    document.getElementById('totalOtherChargeDisplay').innerHTML = `${totalOtherCharge.toLocaleString()} <span style="font-size: 14px; font-weight: normal; opacity: 0.7;">원</span>`;
+    document.getElementById('otherChargeCountDisplay').textContent = `${otherChargeCount}건`;
+    document.getElementById('totalTeslaDisplay').innerHTML = `${totalTesla.toLocaleString()} <span style="font-size: 14px; font-weight: normal; opacity: 0.7;">원</span>`;
+    document.getElementById('teslaCountDisplay').textContent = `${teslaCount}건`;
+    document.getElementById('totalGeneralExpenseDisplay').innerHTML = `${totalGeneralExpense.toLocaleString()} <span style="font-size: 14px; font-weight: normal; opacity: 0.7;">원</span>`;
+    document.getElementById('generalExpenseCountDisplay').textContent = `${generalExpenseCount}건`;
+    document.getElementById('totalExpenseDisplay').textContent = `${totalExpense.toLocaleString()} 원`;
+
+    const catVal = filterCategory ? filterCategory.value : ""; 
+    const yearVal = filterYear ? filterYear.value : ""; 
+    const monthVal = filterMonth ? filterMonth.value : "";
+
+    let displayedRecords = records.filter(r => {
+      const [y, m] = r.date.split('-');
+      const matchCat = !catVal || r.category === catVal || (catVal === '채비 총구독비' && (r.category === '채비 월 구독비' || r.category === '채비 총구독비')) || (catVal === '채비 월 보너스 크레딧' && (r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧')) || (catVal === '채비 보너스포인트 적립' && r.category === '채비 보너스포인트 적립');
+      const matchYear = !yearVal || y === yearVal; const matchMonth = !monthVal || m === monthVal;
+      return matchCat && matchYear && matchMonth;
+    });
+    displayedRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    let filteredSum = displayedRecords.reduce((acc, cur) => acc + (Number(cur.amount) || 0), 0);
+
+    const recordCountEl = document.getElementById('recordCount');
+    if (recordCountEl) {
+      recordCountEl.textContent = `${displayedRecords.length}건 (합산: ${filteredSum.toLocaleString()}원)`;
+    }
+
+    const recordList = document.getElementById('recordList');
+    if (!recordList) return;
+    if (displayedRecords.length === 0) {
+      recordList.innerHTML = `<div style="text-align: center; padding: 24px 0; color: var(--sub-text); font-size: 11px;"><i class="fa-regular fa-folder-open" style="font-size: 20px; margin-bottom: 6px; display: block;"></i>조건에 일치하는 기록이 없습니다.</div>`;
+      return;
+    }
+
+    let html = '';
+    displayedRecords.forEach(r => {
+      let badgeBg = 'rgba(56, 189, 248, 0.15)';
+      let badgeColor = '#38bdf8';
+      let displaySign = '';
+      let amountColor = 'var(--text-color)';
+
+      const catName = (r.category === '채비 월 구독비' || r.category === '채비 총구독비') ? '[채비] 총구독비' : ((r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧') ? '[채비] 월 보너스 크레딧' : (r.category === '채비 보너스포인트 적립' ? '[채비] 충전 적립 5%' : r.category));
+
+      if (r.category === '채비 카드충전') { badgeBg = 'rgba(34, 197, 94, 0.2)'; badgeColor = '#4ade80'; displaySign = '-'; amountColor = '#fca5a5'; }
+      else if (r.category === '채비 카드 잔여') { badgeBg = 'rgba(56, 189, 248, 0.2)'; badgeColor = '#38bdf8'; }
+      else if (r.category === '채비 월 구독비' || r.category === '채비 총구독비') { badgeBg = 'rgba(6, 182, 212, 0.2)'; badgeColor = '#22d3ee'; displaySign = '-'; amountColor = '#fca5a5'; }
+      else if (r.category === '채비 월 보너스포인트' || r.category === '채비 월 보너스 크레딧' || r.category === '채비 보너스포인트 적립' || r.category === '채비 번개크레딧') { badgeBg = 'rgba(168, 85, 247, 0.2)'; badgeColor = '#c084fc'; }
+      else if (r.category === '기타 충전소 차감') { badgeBg = 'rgba(147, 51, 234, 0.2)'; badgeColor = '#c084fc'; displaySign = '-'; amountColor = '#fca5a5'; }
+      else if (r.category === '테슬라 충전지출') { badgeBg = 'rgba(239, 68, 68, 0.25)'; badgeColor = '#f87171'; displaySign = '-'; amountColor = '#fca5a5'; }
+      else if (r.category === '정비항목 지출내역' || r.category === '기타 지출내역') { badgeBg = 'rgba(148, 163, 184, 0.2)'; badgeColor = '#cbd5e1'; displaySign = '-'; amountColor = '#fca5a5'; }
+
+      html += `<div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px; transition: 0.2s;">
+        <div style="display: flex; flex-direction: column; gap: 3px;">
+          <div style="display: flex; align-items: center; gap: 5px;">
+            <span style="font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: ${badgeBg}; color: ${badgeColor};">${catName}</span>
+            <span style="font-size: 10px; color: var(--sub-text);">${r.date}</span>
+          </div>
+          <p style="font-size: 11px; font-weight: 500; color: var(--text-color);">${r.memo ? r.memo : '메모 없음'}</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 13px; font-weight: 800; color: ${amountColor};">${displaySign}${r.amount.toLocaleString()}원</span>
+          <button type="button" onclick="deleteRecord(${r.id})" style="background: none; border: none; color: var(--sub-text); cursor: pointer; font-size: 12px;"><i class="fa-solid fa-trash-can"></i></button>
+        </div>
+      </div>`;
+    });
+    recordList.innerHTML = html;
+  }
+
+  // 최초 실행 시 서버 API에서 데이터 호출
+  initCalendarUI();
+  loadFromServer();
 </script>
 </body>
 </html>
