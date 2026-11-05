@@ -24,6 +24,7 @@
     --input-bg: rgba(255, 255, 255, 0.08);
     --input-border: 1px solid rgba(255, 255, 255, 0.2);
     --input-color: #ffffff;
+    --placeholder-color: rgba(255, 255, 255, 0.65); /* 💡 플레이스홀더를 화사하고 밝게 수정 */
     --sub-text: rgba(255, 255, 255, 0.7);
     --header-bg: #38bdf8;
   }
@@ -90,6 +91,11 @@
     outline: none;
     transition: all 0.2s ease;
   }
+  /* 💡 브라우저별 플레이스홀더 컬러 밝게 적용 */
+  .input-field::placeholder { color: var(--placeholder-color); opacity: 1; }
+  .input-field::-webkit-input-placeholder { color: var(--placeholder-color); }
+  .input-field::-moz-placeholder { color: var(--placeholder-color); opacity: 1; }
+
   .input-field:focus {
     border-color: #38bdf8;
     box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
@@ -419,27 +425,6 @@
 
     const totalCells = firstDay + lastDate;
     const nextDays = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
-    for (let i = 1; i <= nextDays; i++) {
-      const nextMonth = month === 11 ? 0 : month + 1;
-      const nextYear = month === 11 ? year + 1 : year;
-      const fullStr = `${nextYear}-${String(nextSkillMonth = nextMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-      daysHtml += `<div class="cal-cell other-month" onclick="selectDate('${nextYear}-${String(nextMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}')">${i}</div>`;
-    }
-
-    // 위 구문의 nextYear/nextMonth 안전 장치 수정 적용
-    daysHtml = '';
-    for (let i = firstDay - 1; i >= 0; i--) {
-      const dayNum = prevLastDate - i;
-      const prevMonth = month === 0 ? 11 : month - 1;
-      const prevYear = month === 0 ? year - 1 : year;
-      const fullStr = `${prevYear}-${String(prevMonth + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
-      daysHtml += `<div class="cal-cell other-month" onclick="selectDate('${fullStr}')">${dayNum}</div>`;
-    }
-    for (let i = 1; i <= lastDate; i++) {
-      const fullStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-      const isSelected = fullStr === selectedDateStr ? 'selected' : '';
-      daysHtml += `<div class="cal-cell ${isSelected}" onclick="selectDate('${fullStr}')">${i}</div>`;
-    }
     for (let i = 1; i <= nextDays; i++) {
       const nextMonth = month === 11 ? 0 : month + 1;
       const nextYear = month === 11 ? year + 1 : year;
