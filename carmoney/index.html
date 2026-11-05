@@ -537,13 +537,27 @@ function deleteBackup(key) {
   }
 }
 
-// [서버 API 연동] Node.js 서버 /api/data 에서 최신 데이터 불러오기 (GET)
+// [서버 API 연동] Node.js 서버 /api/data 에서 최신 데이터 불러오기 + 초기화 방어 자동 동기화
 async function loadFromServer() {
   try {
     const res = await fetch('/api/data', { cache: 'no-store' });
     if (res.ok) {
       const jsonData = await res.json();
-      records = Array.isArray(jsonData) ? jsonData : (jsonData.records || []);
+      const serverRecords = Array.isArray(jsonData) ? jsonData : (jsonData.records || []);
+      
+      // 만약 서버가 초기화되어 데이터가 비어있고('[]'), 내 로컬 브라우저에 기록이 남아있다면 서버를 자동으로 복구합니다!
+      if (serverRecords.length === 0) {
+        const localSaved = JSON.parse(localStorage.getItem('nathe_car_records')) || [];
+        if (localSaved.length > 0) {
+          records = localSaved;
+          await saveToServer(); // 서버에 즉시 밀어넣어 초기화 방어
+          checkAndGenerateAutomaticRecords();
+          renderApp();
+          return;
+        }
+      }
+
+      records = serverRecords;
       checkAndGenerateAutomaticRecords();
       renderApp();
       return;
@@ -578,6 +592,15 @@ async function saveToServer() {
     console.warn("서버 통신 에러 (로컬에만 저장됨)");
   }
 }
+
+// [핵심 추가] 5분마다 서버에 빈 핑(Ping)을 보내어 15분 절전 모드 진입 방지 (Keep-Alive)
+setInterval(async () => {
+  try {
+    await fetch('/api/data', { method: 'GET', cache: 'no-store' });
+  } catch (err) {
+    // 백그라운드 핑 에러 무시
+  }
+}, 5 * 60 * 1000); // 5분 (300,000ms)
 
 function checkAndGenerateAutomaticRecords() {
   let modified = false; 
@@ -773,12 +796,10 @@ function renderApp() {
 
   let finalCardRemaining = manualRemaining !== null ? manualRemaining : (totalRealCharge + totalBenefit);
   
-  // 요청하신 공식 반영: (충전 선금 총액 - 카드 잔여금) + 구독비 총합
   let netCardUsage = cardAdvanceTotal - finalCardRemaining;
   if (netCardUsage < 0) netCardUsage = 0;
   let realUsedAmount = netCardUsage + subscriptionTotal;
 
-  // 6% 할인 혜택 계산
   let chargeDiscountAmount = Math.floor(realUsedAmount * 0.06);
 
   let calculatedBenefit = totalBenefit + (cardAdvanceTotal - finalCardRemaining - netCardUsage);
